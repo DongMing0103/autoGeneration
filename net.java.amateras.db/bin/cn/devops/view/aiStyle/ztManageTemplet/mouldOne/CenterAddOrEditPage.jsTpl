@@ -1,0 +1,137 @@
+/* mainAddOrEdit${table.tableNameOut} */
+
+	//表单验证
+	$("form").validate({
+		onfocusout: false,
+		onclick: false,
+		onkeyup: false,
+		showErrors: function(errorMap,errorList){			
+			if(errorList.length){
+				layer.alert(errorList[0].message,function(index){
+					layer.close(index);
+					$(errorList[0].element).focus();
+				});
+			}
+		}
+	});	
+	
+	function saveOrUpdate(flag,status,titleMsg){
+	var url="";
+	if(flag=="update"){
+		url="/${table.tableNameOut.toLowerCase()}/doUpdate"
+	}else{
+		url="/${table.tableNameOut.toLowerCase()}/add${table.tableNameOut}";
+	}
+	//校验条件 根据需要进行增删
+	/*$("#industryId").select2({width:"100px"});
+	var industryIds=$("#industryId").select2("val");
+	var industryId = "";
+	gg888.each(industryIds,function(i){
+		industryId = industryId+industryIds[i]+",";
+	})
+	
+	$("#secondCategoryId").select2({width:"100px"});
+	
+	industryId = industryId.replace(/^\,|\,$/,"");
+	
+	var secondCategoryId = $("#secondCategoryId").select2("val");
+	var umsolutionText = $("#introduction").val();
+	var content = htmlEncode(editor.html);
+	
+	var imgPathUrl = $("#imageUrl").val();
+	var title = $("#title").val();
+	if(status!="1"){
+		var result = checkSingleForm("articleForm");
+		if(!result)return;
+		if(title ==""){
+			layer.alert("标题不能为空",{icon:2,title:"信息"});
+			return;
+		}
+		if(title.length>30){
+			layer.alert("标题不能超过30个字",{icon:2,title:"信息"});
+			return;
+		}
+		
+		if(imgPathUrl == ""){
+			layer.alert("展示图不能为空",{icon:2,title:"信息"});
+			return;
+		}
+		
+		if(umsolutionText == null || umsolutionText =='' || umsolutionText == undefined){
+			layer.alert("文章概述不能为空",{icon:2,title:"信息"});
+			return;
+		}
+		
+		if(umsolutionText.length>30){
+			layer.alert("文章概述不能超过300个字",{icon:2,title:"信息"});
+			return;
+		}
+		
+		if(content == null ||content ==""|| content == undefined){
+			layer.alert("文章内容不能为空",{icon:2,title:"信息"});
+			return;
+		}
+	}*/
+	
+	var message = "您确认要{}吗?";
+	layer.confirm(message.replace("{}",titleMsg),{title:titleMsg},function(){
+		gg888.ajax({
+			cache:true,
+			type:"POST",
+			url:url,
+			data:{
+				#foreach($column in $auTable.columns) 
+				#if(!$column.isPrimaryKey())
+					$column.columnNameOutLow:#5555$column.columnNameOutLow").val(),
+				#end
+				        
+				#end
+				a:"a"
+			},
+			dataType:"json",
+			success:function(data){
+				if(data&& data.code==0){
+					layer.msg("操作成功",{time:1000},function(){
+						window.location.href="/${table.tableNameOut.toLowerCase()}/init";
+					});
+				}else{
+					layer.msg(data.desc,{time:2000});
+				}
+			}			
+		});
+	})
+}
+	//取消按钮 
+	$('#btnClose').on('click',function(){
+		$('.poptip').remove();
+		$('#${table.tableNameOut}InforForm').each(function(){
+			if ($(this).hasClass('red-border')) {
+				$(this).removeClass('red-border')
+			}
+		})
+		$('#article-addpage, .article-model').fadeOut();
+	});
+	
+	//关闭当前窗口
+	function closeThis() {
+		parent.layer.closeAll();
+	}
+	
+	var webFileServer = "$!imgUploadAddress"; //文件服务器地址
+	var webFileViewServer = "$!imgViewAddress"; //文件服务器地址
+	initEditor({el:"#descripe"});
+	
+	#if($canCategory == "true")
+	//分类二级联动
+	/*$(function(){
+		var category = new Category({defalutName: "全部",status:""});
+		category.execute();
+		var category = new Category({'level':2, 'id': "secondCategoryId"});
+		category.execute();
+		// 一级>二级分类联动
+		$('#firstCategoryId').on("change",function(){
+			var category = new Category({'level':2, status:"", 'id':"secondCategoryId", defalutName:"全部"});
+			category.execute();
+		})
+	});*/
+	#end

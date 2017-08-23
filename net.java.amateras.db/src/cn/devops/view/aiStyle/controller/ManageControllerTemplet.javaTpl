@@ -1,0 +1,443 @@
+package ${package}.manager.controller.${modelName};
+
+
+import java.util.Map;
+import java.util.List;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ${package}.common.enums.*;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
+import ${package}.common.util.CollectionsUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.ModelAndView;
+
+import ${package}.common.util.StringUtil;
+import ${package}.common.util.DateUtils;
+import ${package}.common.util.ExcelUtil;
+import ${package}.common.util.BeanConvertor;
+import ${package}.common.util.BeanUtils;
+import ${package}.common.util.Consts;
+import ${package}.common.model.PageRespModel;
+import ${package}.common.model.RespModel;
+
+import ${package}.dao.entity.${modelName}.${table.tableNameOut}PO;
+import ${package}.dao.entity.agent.CrmSplitAssignSetPO;
+import ${package}.service.vo.agent.CrmSplitAssignSetVO;
+import ${package}.service.vo.${modelName}.${table.tableNameOut}VO;
+import ${package}.service.vo.business.CrmBusinessTailRecordVO;
+import ${package}.service.serviceInter.${modelName}.I${table.tableNameOut}Service;
+import ${package}.service.serviceInter.system.UserService;
+import ${package}.service.serviceInter.canteen.ICrmCanteenBaseInfoService;
+import ${package}.service.serviceInter.business.ICrmDepartmentService;
+import ${package}.service.serviceInter.business.ICrmPositionService;
+import ${package}.service.serviceInter.business.ICrmBusinessService;
+import ${package}.service.serviceInter.agent.ICrmAgentService;
+import ${package}.service.serviceInter.business.ICrmBusinessOrderService;
+import ${package}.service.serviceInter.agent.ICrmSplitAssignSetService;
+
+import ${package}.service.serviceInter.business.ICrmOrderService;
+import ${package}.service.param.${modelName}.${table.tableNameOut}Param;
+import ${package}.service.param.business.CrmBusinessTailRecordParam;
+
+import ${package}.common.exceptions.BizException;
+import ${frameWorkPath}.controller.base.BaseController;
+import ${frameWorkPath}.plugin.Page;
+import ${frameWorkPath}.util.ParamMap;
+
+import ${package}.dao.entity.business.OrderPO;
+import ${package}.dao.entity.business.CrmBusinessPO;
+import ${package}.dao.entity.agent.CrmAgentPO;
+import ${package}.dao.entity.business.CrmDepartmentPO;
+import ${package}.service.vo.business.OrderVO;
+import ${package}.dao.entity.business.CrmPositionPO;
+import ${package}.dao.entity.UserPO;
+import ${package}.dao.entity.canteen.CrmCanteenBaseInfoPO;
+import ${package}.dao.entity.business.OrderGoodsItemPO;
+import ${package}.dao.entity.business.CrmBusinessOrderPO;
+
+
+/**
+ * ${table.tableNameOutLow} $!{logicalName}
+ * @author system code gen
+ *
+ */
+@Controller
+@RequestMapping("/${table.tableNameOut.toLowerCase()}")
+public class ${table.tableNameOut}Controller  extends BaseController {
+    protected static final Logger logger = LoggerFactory.getLogger(${table.tableNameOut}Controller.class);
+    @Autowired
+    I${table.tableNameOut}Service mainService;
+    
+    /*
+     * 代理商
+     */
+    @Autowired
+	ICrmAgentService icCrmAgentService;
+
+	/**
+	 * 业务员基本信息
+	 */
+	@Autowired
+	ICrmBusinessService iCrmBusinessService;
+	
+	/**
+	 * 订单信息
+	 */
+	@Autowired
+	ICrmOrderService iCrmOrderService;
+    
+    @Autowired
+    ICrmBusinessOrderService crmBusinessOrderService;
+    
+    /**
+	 * 用户表
+	 */
+	@Autowired
+	UserService userService;
+	
+	/**
+     * 食堂信息
+     */
+	@Autowired
+	ICrmCanteenBaseInfoService iCrmCanteenBaseInfoService; 
+	
+	@Autowired
+	ICrmSplitAssignSetService crmSplitAssignSetService;
+	
+	@Autowired
+	ICrmDepartmentService iCrmDepartmentService;
+
+	@Autowired
+	ICrmPositionService iCrmPositionService;
+	
+	
+    
+    /**
+     * 初始化
+     * @param param
+     * @return
+     */
+    @RequestMapping("/init")
+    public ModelAndView init() {
+     	
+    	ModelAndView view = new ModelAndView("/${table.tableNameOut.toLowerCase()}/main${table.tableNameOut}");
+    	ParamMap param =  new ParamMap();
+    	view.addObject("active","${table.tableNameOut}");
+		return view;
+    }
+    
+    /**
+     * 新增页面
+     * @return 
+     */
+    @RequestMapping(value = "add${table.tableNameOut}")
+    public ModelAndView add${table.tableNameOut}() {
+         ModelAndView modelAndView = new ModelAndView("/${table.tableNameOut.toLowerCase()}/mainAdd${table.tableNameOut}");
+		 ${table.tableNameOut}Param ${table.tableNameOut}Param = new ${table.tableNameOut}Param();
+		 modelAndView.addObject("type","add");
+		 modelAndView.addObject("${table.tableNameOut}Param",${table.tableNameOut}Param);
+         return modelAndView;
+    }
+    
+    /**
+     * 进入编辑页面
+     * @return
+     */
+    @RequestMapping(value = "/edit${table.tableNameOut}")
+    public ModelAndView edit${table.tableNameOut}(${table.tableNameOut}Param param) {
+         ModelAndView modelAndView = new ModelAndView("/${table.tableNameOut.toLowerCase()}/mainEdit${table.tableNameOut}");
+         Long id = param.getId();
+         ${table.tableNameOut}PO po = mainService.get(${table.tableNameOut}PO.class,id );
+         modelAndView.addObject("po",po);
+         modelAndView.addObject("type","update");
+         return modelAndView;
+    }
+    
+   /**
+     * 删除
+     * @param 
+     * @return
+     */
+    @RequestMapping(value = "doDelete/{id}")
+    @ResponseBody
+    public RespModel delete(@PathVariable Long id) {
+        RespModel res = new RespModel();
+        try {
+			mainService.deleteById(id);
+		} catch (BizException e) {
+			logger.error("delete", e);
+		}
+        return res;
+    }
+    
+    /**
+     * 保存
+     */
+    @RequestMapping(value = "doSave")
+    @ResponseBody
+    public RespModel doSave(${table.tableNameOut}Param param, HttpServletRequest request) {
+        RespModel res = new RespModel();
+       	${table.tableNameOut}PO po=BeanConvertor.convertBean(param, ${table.tableNameOut}PO.class);
+       	po.setCreateTime(new Date());
+        mainService.saveEntity(po);
+        return res;
+    }
+    
+    /**
+     * 编辑功能
+     */
+    @RequestMapping(value = "doUpdate")
+    @ResponseBody
+    public RespModel doUpdate(${table.tableNameOut}Param param, HttpServletRequest request) {
+       RespModel res = new RespModel();
+       ${table.tableNameOut}PO po=BeanConvertor.convertBean(param, ${table.tableNameOut}PO.class);
+       mainService.updateEntity(po);
+       return res;
+    }
+    
+    /**
+     * 一览查询
+     * @param param
+     * @return
+     */
+    @RequestMapping("/queryPage")
+    @ResponseBody
+    public PageRespModel queryPage(${table.tableNameOut}Param param) throws Exception {
+    	PageRespModel model = new PageRespModel();
+    	Page<${table.tableNameOut}VO> pages = mainService.queryPage(param);
+    	model.setTotal(pages.getTotalResult());
+    	model.setRows(pages.result);
+    	
+    	return model;
+    }
+    
+	#if($canStopStart == "true")
+	/**
+	 * 变更停用启用状态
+	 */
+	@RequestMapping(value = "updateEnabled/{id}/{enabled}")
+	@ResponseBody
+	public RespModel updateEnabled(@PathVariable Long id, @PathVariable Integer enabled) {
+		RespModel res = new RespModel();
+			/*if (enabled == ${table.tableNameOut}EnabledEnum.STOP.getIntegerCode()) { //停用状态
+				${table.tableNameOut}Param param = new ${table.tableNameOut}Param();
+				param.setEnabled(EnabledEnum.OPEN.getIntCode());
+				${serviceFileName}.updateEnabled(id, enabled, shortValue());
+				Long messagerId = UserUtil.getLoginId();
+				${serviceFileName}.createMessage(id, messagerId);*/
+				
+				${serviceFileName}.updateEnabled(id, enabled, shortValue());
+		
+		return res;
+	}
+	#end
+	
+	/**
+	 * 查看
+	 */
+	@RequestMapping(value = "/viewInfo")
+	public ModelAndView viewInfo(${table.tableNameOut}Param param) {
+		ModelAndView view = new ModelAndView("${table.tableNameOut}/mainEdit${table.tableNameOut}");
+		Long id = param.getId();
+		${table.tableNameOut}PO ${table.tableNameOut.toLowerCase()}PO = mainService.findById(id);
+		view.addObject("po", ${table.tableNameOut.toLowerCase()}PO);
+		return view;
+	}
+	
+	#if($Excel == "true")
+	/**
+	 * 导出功能
+	 */
+	@RequestMapping(value = "/excelOut")
+	public void excelOut(HttpServletResponse response, ${table.tableNameOut}Param param){
+		Page<${table.tableNameOut}VO> pages = mainService.findPageSelect(param);
+		List<${table.tableNameOut}VO> listVo = pages.result;
+		List<${table.tableNameOut}VO> listNew = new ArrayList<${table.tableNameOut}VO>();
+		
+		if (listVo != null) {
+			LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+			map.put("id","ID");	// 根据页面查询字段自行添加map
+			try {
+				ExcelUtil.writeXls(response, "${table.tableNameOut}", map, listVo, ${table.tableNameOut}VO.class);
+			} catch (Exception e) {
+				logger.error("#${table.tableNameOut.toLowerCase()}#excelOut:", e);
+			}
+		}
+	}
+	#end
+	
+	#if($Trace == "true")
+	/**
+	 * 跟踪记录页面跳转
+	 */
+	@RequestMapping(value = "/initClint")
+	@ResponseBody
+	public ModelAndView initClint(${table.tableNameOut}Param param) {
+		ModelAndView view = new ModelAndView("");
+		ParamMap paramMap = new ParamMap();
+		view.addObject("Id", param.getId());
+		return view;
+	}
+	
+	/**
+	 * 跟踪记录查询
+	 */
+	@RequestMapping(value = "/queryList")
+	@ResponseBody
+	public PageRespModel queryList(${table.tableNameOut}Param param) throws Exception {
+		PageRespModel model = new PageRespModel();
+		Page<${table.tableNameOut}VO> pages = mainService.queryList(param);
+		model.setTotal(pages.getTotalResult());
+		model.setRows(pages.result);
+		return model;
+	}
+	#end
+	
+	#if($Split == "true")
+	/**
+	 * 分账明细查看
+	 */
+	@RequestMapping(value = "/orderView/{id}")
+	@ResponseBody
+	public ModelAndView orderView (HttpServletRequest request, @PathVariable Long id) {
+		ModelAndView modelAndView = new ModelAndView("");
+		try {
+			List<CrmSplitAssignSetPO> po = crmSplitAssignSetService.findById(id);
+			CrmSplitAssignSetPO setPO = po.get(0);
+			CrmSplitAssignSetVO splitVo = BeanConvertor.convertBean(setPO, CrmSplitAssignSetVO.class);	// 抽成分配
+			OrderPO orderPOs = iCrmOrderService.findById(id);
+			OrderPO oPO = new OrderPO();	// 订单信息
+			OrderVO oVO = new OrderVO();
+			UserPO userPO = new UserPO(); 	// 个人信息
+			CrmCanteenBaseInfoPO canteenBaseInfoPO = new CrmCanteenBaseInfoPO();	// 食堂信息
+			
+			try {
+				List<OrderGoodsItemPO> ogip = iCrmOrderService.findByOrderId(id);
+				OrderGoodsItemPO orderGoodsItemPO = ogip.get(0);
+				modelAndView.addObject("orderGoodsItemPO", orderGoodsItemPO);	// 抽成分配设置表
+			} catch (Exception e) {
+				logger.error("#${table.tableNameOut}Controller", e);
+			}
+			
+			if (orderPOs != null) {
+				Long businessId = setPO.getBusinessId();	// 获取业务员信息
+				CrmBusinessOrderPO businessOrderPO = crmBusinessOrderService.findByBusinessId(businessId);// 根据业务员id查询订单
+				if (BeanUtils.isNotEmpty(businessOrderPO)) {
+					// Long orderId = businessOrderPO.getOrderId();//订单表orderPO
+					oPO = iCrmOrderService.findById(id);
+					if (BeanUtils.isNotEmpty(oPO) && BeanUtils.isNotEmpty(oPO.getUserId())) {
+						Long userId = oPO.getUserId();// 获取用户资料
+						userPO = userService.getById(userId);
+
+					}
+					if (BeanUtils.isNotEmpty(oPO) && BeanUtils.isNotEmpty(oPO.getCanteenId())) {// 根据商家id查询对应信息
+						canteenBaseInfoPO = iCrmCanteenBaseInfoService.findByCanteenId(oPO.getCanteenId());
+					}
+
+					// 供应类目和消费状态 去查order表 没有对应的实体类
+					BigDecimal splitPercent = setPO.getBusinssSplitPercent();// 获取业务员分账比例
+					splitVo.setOrderNum(businessOrderPO.getOrderNo());// 获取订单id
+					splitVo.setRealMoney(businessOrderPO.getOrderRealMoney());// 订单的总金额
+					splitVo.setCreaterTime(businessOrderPO.getCreateTime());// 分账时间
+					if (BeanUtils.isNotEmpty(businessOrderPO.getOrderRealMoney()) && BeanUtils.isNotEmpty(splitPercent)
+							&& splitPercent.compareTo(BigDecimal.ZERO) > 0) {
+//						BigDecimal splitP = new BigDecimal(Double.toString(splitPercent));
+						// BigDecimal的乘法计算
+						splitVo.setSplitMoney(businessOrderPO.getOrderRealMoney().multiply(splitPercent.divide(new BigDecimal(100))));
+					}
+				}
+				
+				// 获取平台利润
+				BigDecimal cutmoney = oPO.getCutMoney();
+				BigDecimal channelmoney = oPO.getChannelMoney();
+				BigDecimal profitMoney = cutmoney.subtract(channelmoney);
+				oVO.setProfitMoney(profitMoney);
+
+				CrmBusinessPO crmBusinessPO = iCrmBusinessService.findByBusinessId(businessId); // 获取业务员名称
+				splitVo.setBusinessName(crmBusinessPO.getName());
+
+				Long agentId = setPO.getAgentId(); // 获取代理商id
+				CrmAgentPO crmAgentPO = icCrmAgentService.findByAgentId(agentId); // 获取代理商名称
+				splitVo.setAgentName(crmAgentPO.getName());
+
+				// 根据代理商id 获取岗位名称 部门名称
+				CrmDepartmentPO crmDepartmentPO = iCrmDepartmentService.findByAgentId(agentId);
+				if (crmDepartmentPO != null) {
+					oVO.setdName(crmDepartmentPO.getDName());
+				}
+				CrmPositionPO crmPositionPO = iCrmPositionService.findByAgentId(agentId);
+				if (crmPositionPO != null) {
+					oVO.setpName(crmPositionPO.getName());
+				}
+
+				Long canteenId = setPO.getCanteenId();// 获取食堂信息
+				CrmCanteenBaseInfoPO cpInfoPO = iCrmCanteenBaseInfoService.findByCanteenId(canteenId);
+				if (BeanUtils.isNotEmpty(cpInfoPO)) {// 查询食堂名称
+					splitVo.setName(cpInfoPO.getName());
+				}
+				// 支付状态
+				Integer status = oPO.getStatus();
+				if (BeanUtils.isNotEmpty(status)) {
+					switch (status) {
+					case 1:
+						oVO.setStatusName("未支付 ");
+						break;
+					case 2:
+						oVO.setStatusName("已支付 ");
+						break;
+					case 3:
+						oVO.setStatusName("已接单");
+						break;
+					case 4:
+						oVO.setStatusName("已送达 ");
+						break;
+					case 5:
+						oVO.setStatusName("已完成 ");
+						break;
+					case 6:
+						oVO.setStatusName("已评价 ");
+						break;
+					case 7:
+						oVO.setStatusName("已取消 ");
+						break;
+					case 8:
+						oVO.setStatusName("待评价 ");
+						break;
+					case 9:
+						oVO.setStatusName("待取餐 ");
+						break;
+					default:
+						break;
+					}
+				}
+			}
+			modelAndView.addObject("canteenBaseInfoPO", canteenBaseInfoPO);
+			modelAndView.addObject("oPO", oPO);
+			modelAndView.addObject("oVO", oVO);
+			modelAndView.addObject("cUserPO", userPO); // 个人用户信息
+			modelAndView.addObject("po", po);
+			modelAndView.addObject("splitVo", splitVo); // 抽成分配设置表
+			modelAndView.addObject("setPO", setPO); // 抽成分配设置表
+			return modelAndView;
+		} catch (Exception e) {
+			logger.error("#${table.tableNameOut}Controller#orderView:", e);
+		}
+		return modelAndView;
+	}
+	#end	
+}

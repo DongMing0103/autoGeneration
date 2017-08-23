@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util
+END
+ColorRegistry.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/ColorRegistry.java
+END
+JarClassLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/JarClassLoader.java
+END
+StringUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/StringUtils.java
+END
+TableViewerSupport.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/TableViewerSupport.java
+END
+AbstractDialogPropertyDescriptor.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/AbstractDialogPropertyDescriptor.java
+END
+SpinnerFieldEditor.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/SpinnerFieldEditor.java
+END
+UIUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/UIUtils.java
+END
+IOUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/IOUtils.java
+END
+DatabaseInfo.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/DatabaseInfo.java
+END
+ModelUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/ModelUtils.java
+END
+dictionary.txt
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/dictionary.txt
+END
+GenericsUtils.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/GenericsUtils.java
+END
+NameConverter.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/NameConverter.java
+END
+FontPropertyDescriptor.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/util/FontPropertyDescriptor.java
+END

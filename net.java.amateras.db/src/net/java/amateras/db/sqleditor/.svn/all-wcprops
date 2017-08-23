@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/sqleditor
+END
+SQLKeywordPartitionScanner.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/sqleditor/SQLKeywordPartitionScanner.java
+END
+SQLConfiguration.java
+K 25
+svn:wc:ra_dav:version-url
+V 132
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/sqleditor/SQLConfiguration.java
+END
+EditorColorProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/sqleditor/EditorColorProvider.java
+END
+SQLPartitionScanner.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/sqleditor/SQLPartitionScanner.java
+END

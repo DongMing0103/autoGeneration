@@ -1,0 +1,1106 @@
+package cn.devops.controller.del;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import net.java.amateras.db.DBPlugin;
+import net.java.amateras.db.dialect.DialectProvider;
+import net.java.amateras.db.dialect.IDialect;
+import net.java.amateras.db.dialect.ISchemaLoader;
+import net.java.amateras.db.ui.bean.Node;
+import net.java.amateras.db.ui.bean.RootNode;
+import net.java.amateras.db.ui.bean.SaveConfig;
+import net.java.amateras.db.ui.provider.TVContentProvider;
+import net.java.amateras.db.ui.provider.TVLabelProvider;
+import net.java.amateras.db.util.DatabaseInfo;
+import net.java.amateras.db.util.JarClassLoader;
+import net.java.amateras.db.visual.model.ColumnModel;
+import net.java.amateras.db.visual.model.RootModel;
+import net.java.amateras.db.visual.model.TableModel;
+
+import org.apache.commons.io.FileUtils;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+
+import cn.devops.controller.DevopsLinkSubFiledDialog;
+import cn.devops.controller.QueryTableFieldSelDialog;
+import cn.devops.service.impl.codeGenerate.DevopsMavenCodeGenerater;
+import cn.devops.util.db.DbRes;
+
+/**
+ * 代码生成器 选择窗口
+ * 
+ * @author wing
+ * 
+ */
+public class GenCode4DbTableSelDialog extends Dialog {
+	public static final String Formater_yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
+
+	protected Object result;
+	protected Shell shell;
+	private Text txtPackage;
+	private Combo txtDbTableList;
+	private Text txtClassName;
+	private Text txtBasePackage;
+	private Text txtService;
+	private Text txtMainFiled;
+	private Text txtEntiry;
+	private Text txtFuncPackage;
+
+	private Text txtMapper;
+	private Text txtAuth;
+	private DatabaseInfo dbinfo;
+	private String dbUrl;
+	private JarClassLoader classLoader;
+	private DbRes res;
+	private CheckboxTreeViewer treeViewer;
+	private RootNode root;
+	private String tableName;
+	private List<ColumnModel> columnModels;
+	private String fieldPK;
+	private HashMap resultMap;
+	private Text txtMainTableAs;
+	private String tableDesc;
+	private Object[] qryOutArr;
+	private Object[] tableOut;
+	private Object[] aduOut;
+	private CTabItem tbtmNewItem;
+	private Text txtMsg;
+	private Text txtProjDir;
+	private Text text_1;
+	private Text txtDsw;
+	boolean isCheck = false;
+
+	private Text text;
+	private Text txtHtmlBasePrevPackage;
+	private Text txtDir4business;
+	private Text text_3;
+	private Text txtServiceDir;
+	private Text txtEntityDir;
+	private Text txtMapperDir;
+	private Combo txtGenCodeProject;
+	private Text txtGenCodeComm;
+	private Button btnCommMapperChk;
+	private Composite composite;
+	private Button btnCommServiceChk;
+	private Button btnCommEntityChk;
+	private Button btnCommDaoChk;
+	private Combo txtControlerModel;
+	private Combo comHtmlMaven;
+
+	/**
+	 * 代码生成器 选择窗口
+	 */
+	public GenCode4DbTableSelDialog(Shell shell2, int applicationModal, DbRes res, JarClassLoader classLoader) {
+		super(shell2, applicationModal);
+		setText("代码生成窗口");
+		this.res = res;
+		this.dbUrl = res.getDbUrl();
+		this.classLoader = classLoader;
+	}
+
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public GenCode4DbTableSelDialog(Shell shell2, int applicationModal, RootModel rootModel, String tableName, Table tblColumns,
+			List<ColumnModel> columnModels, DbRes res, String tableDesc) {
+		super(shell2, applicationModal);
+		this.tableName = tableName;
+		this.columnModels = columnModels;
+		for (int i = 0; i < columnModels.size(); i++) {
+			ColumnModel column = (ColumnModel) columnModels.get(i);
+			if (column.isPrimaryKey()) {
+				this.fieldPK = column.getColumnName();
+			}
+		}
+		this.res = res;
+		this.tableDesc = tableDesc;
+	}
+
+	/**
+	 * Open the dialog.
+	 * 
+	 * @return the result
+	 */
+	public Object open() {
+		createContents();
+		shell.setLocation(0, 0);
+		shell.open();
+		shell.layout();
+		Display display = getParent().getDisplay();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Create contents of the dialog.
+	 */
+	private void createContents() {
+		shell = new Shell(getParent(), getStyle());
+		shell.setSize(1150, 850);
+		shell.setText(getText());
+		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
+
+		composite = new Composite(shell, SWT.NONE);
+		composite.setBounds(10, 10, 391, 252);
+		composite.setLayout(new GridLayout(11, false));
+
+		Label label_6 = new Label(composite, SWT.NONE);
+		label_6.setText("公共包目录:");
+
+		txtGenCodeComm = new Text(composite, SWT.BORDER);
+		txtGenCodeComm.setText("c:\\userx\\codegen\\dswComm");
+		txtGenCodeComm.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+
+		Button btnNewButton_2 = new Button(composite, SWT.NONE);
+		btnNewButton_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DirectoryDialog dir = new DirectoryDialog(getShell(), SWT.APPLICATION_MODAL);
+				String directoryName = dir.open();
+				if (directoryName != null) {
+					txtGenCodeComm.setText(directoryName);
+				}
+			}
+		});
+		btnNewButton_2.setText("选择");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		Label label_9 = new Label(composite, SWT.NONE);
+		label_9.setText("项目目录:");
+
+		txtGenCodeProject = new Combo(composite, SWT.BORDER);
+		txtGenCodeProject.setItems(new String[] { "c:\\userx\\codegen\\snsBoss" });
+		txtGenCodeProject.setText("c:\\userx\\codegen\\snsBoss");
+		txtGenCodeProject.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+
+		Button button_1 = new Button(composite, SWT.NONE);
+		button_1.setText("选择");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		Label label_3 = new Label(composite, SWT.NONE);
+		label_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		label_3.setText("html保存基础路径：");
+
+		txtHtmlBasePrevPackage = new Text(composite, SWT.BORDER);
+		txtHtmlBasePrevPackage.setText("center");
+		txtHtmlBasePrevPackage.setToolTipText("例如center  或 center.front");
+		txtHtmlBasePrevPackage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		new Label(composite, SWT.NONE);
+
+		Label lblSchema = new Label(composite, SWT.NONE);
+		lblSchema.setText("schema");
+
+		txtDsw = new Text(composite, SWT.BORDER);
+		txtDsw.setText("");
+		txtDsw.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+		Label label_4 = new Label(composite, SWT.NONE);
+		label_4.setText("作者");
+
+		txtAuth = new Text(composite, SWT.BORDER);
+		txtAuth.setText("snsboss xxx");
+		GridData gd_txtAuth = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_txtAuth.widthHint = 150;
+		txtAuth.setLayoutData(gd_txtAuth);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		Label label_5 = new Label(composite, SWT.NONE);
+		label_5.setText("项目正式目录:");
+
+		txtProjDir = new Text(composite, SWT.BORDER);
+		txtProjDir.setText("d:\\dswTargetDir");
+		GridData gd_txtProjDir = new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1);
+		gd_txtProjDir.widthHint = 486;
+		txtProjDir.setLayoutData(gd_txtProjDir);
+
+		Button button = new Button(composite, SWT.NONE);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DirectoryDialog dir = new DirectoryDialog(getShell(), SWT.APPLICATION_MODAL);
+				String directoryName = dir.open();
+				if (directoryName != null) {
+					txtProjDir.setText(directoryName);
+				}
+			}
+		});
+		button.setText("选择");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		Label lblNewLabel = new Label(composite, SWT.NONE);
+		lblNewLabel.setText("分类包");
+
+		txtPackage = new Text(composite, SWT.BORDER);
+		txtPackage.setText("cn.snsboss.center");
+		GridData gd_txtPackage = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_txtPackage.widthHint = 168;
+		txtPackage.setLayoutData(gd_txtPackage);
+		new Label(composite, SWT.NONE);
+
+		Label label = new Label(composite, SWT.NONE);
+		label.setText("主表名称");
+
+		txtDbTableList = new Combo(composite, SWT.BORDER);
+		txtDbTableList.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+
+			}
+		});
+		GridData gd_txtDbTableList = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_txtDbTableList.widthHint = 200;
+		txtDbTableList.setLayoutData(gd_txtDbTableList);
+
+		Label label_2 = new Label(composite, SWT.NONE);
+		label_2.setText("主键");
+
+		txtMainFiled = new Text(composite, SWT.BORDER);
+		GridData gd_txtMainFiled = new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1);
+		gd_txtMainFiled.widthHint = 100;
+		txtMainFiled.setLayoutData(gd_txtMainFiled);
+		new Label(composite, SWT.NONE);
+
+		Label labPackage = new Label(composite, SWT.NONE);
+		labPackage.setText("package");
+
+		txtFuncPackage = new Text(composite, SWT.BORDER);
+		txtFuncPackage.setText("");
+		txtFuncPackage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		new Label(composite, SWT.NONE);
+
+		Label txtMainAsName = new Label(composite, SWT.NONE);
+		txtMainAsName.setText("別名");
+
+		txtMainTableAs = new Text(composite, SWT.BORDER);
+		GridData gd_txtMainTableAs = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_txtMainTableAs.widthHint = 165;
+		txtMainTableAs.setLayoutData(gd_txtMainTableAs);
+
+		Label label_1 = new Label(composite, SWT.NONE);
+		label_1.setText("类名");
+
+		txtClassName = new Text(composite, SWT.BORDER);
+		GridData gd_txtClassName = new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1);
+		gd_txtClassName.widthHint = 226;
+		txtClassName.setLayoutData(gd_txtClassName);
+		new Label(composite, SWT.NONE);
+
+		Label lblDao = new Label(composite, SWT.NONE);
+		lblDao.setText("基础包");
+
+		txtBasePackage = new Text(composite, SWT.BORDER);
+		txtBasePackage.setText("cn.snsboss.business");
+		GridData gd_txtBasePackage = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_txtBasePackage.widthHint = 100;
+		txtBasePackage.setLayoutData(gd_txtBasePackage);
+		new Label(composite, SWT.NONE);
+
+		Label lblmaven_1 = new Label(composite, SWT.NONE);
+		GridData gd_lblmaven_1 = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
+		gd_lblmaven_1.widthHint = 82;
+		lblmaven_1.setLayoutData(gd_lblmaven_1);
+		lblmaven_1.setText("控制器Maven");
+
+		txtControlerModel = new Combo(composite, SWT.BORDER);
+		txtControlerModel.setItems(new String[] { "cn\\snsboss\\web-sl-front", "cn\\snsboss\\web-snsboss-manager", "cn\\snsboss\\web-core",
+				"cn\\snsboss\\web-base", "cn\\snsboss\\web-snsboss-front", "cn\\snsboss\\web-snsboss-manager", });
+		txtControlerModel.setText("cn\\snsboss\\web-snsboss-front");
+		txtControlerModel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+		Button button_2 = new Button(composite, SWT.NONE);
+		button_2.setText("选");
+
+		Button button_3 = new Button(composite, SWT.CHECK);
+		button_3.setText("是公用项目代码");
+		button_3.setSelection(true);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		Label baseService = new Label(composite, SWT.NONE);
+		baseService.setText("DAO基础包");
+
+		text_1 = new Text(composite, SWT.BORDER);
+		text_1.setText("dao");
+		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		new Label(composite, SWT.NONE);
+
+		Label lblBunsiness = new Label(composite, SWT.NONE);
+		lblBunsiness.setText("DAO目录");
+
+		txtDir4business = new Text(composite, SWT.BORDER);
+		txtDir4business.setText("cn\\snsboss\\dao");
+		txtDir4business.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+
+		Button btnNewButton = new Button(composite, SWT.NONE);
+		btnNewButton.setText("选");
+
+		btnCommDaoChk = new Button(composite, SWT.CHECK);
+		btnCommDaoChk.setSelection(true);
+		btnCommDaoChk.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
+		btnCommDaoChk.setText("是公用项目代码");
+		new Label(composite, SWT.NONE);
+
+		Label lblService = new Label(composite, SWT.NONE);
+		lblService.setText("Service");
+
+		txtService = new Text(composite, SWT.BORDER);
+		txtService.setText("cn.snsboss.business.center");
+		GridData gd_txtService = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_txtService.widthHint = 176;
+		txtService.setLayoutData(gd_txtService);
+		new Label(composite, SWT.NONE);
+
+		Label label_8 = new Label(composite, SWT.NONE);
+		label_8.setText("Service目录");
+
+		txtServiceDir = new Text(composite, SWT.BORDER);
+		txtServiceDir.setText("cn\\snsboss\\business");
+		txtServiceDir.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		new Label(composite, SWT.NONE);
+
+		btnCommServiceChk = new Button(composite, SWT.CHECK);
+		btnCommServiceChk.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
+		btnCommServiceChk.setText("是公用项目代码");
+		btnCommServiceChk.setSelection(true);
+
+		new Label(composite, SWT.NONE);
+
+		Label lblNewLabel_1 = new Label(composite, SWT.NONE);
+		lblNewLabel_1.setText("entity");
+
+		txtEntiry = new Text(composite, SWT.BORDER);
+		txtEntiry.setText("cn.snsboss.dao.entity.center");
+		GridData gd_txtEntiry = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_txtEntiry.widthHint = 184;
+		txtEntiry.setLayoutData(gd_txtEntiry);
+		new Label(composite, SWT.NONE);
+
+		Label lblEntity = new Label(composite, SWT.NONE);
+		lblEntity.setText("Entity目录");
+
+		txtEntityDir = new Text(composite, SWT.BORDER);
+		txtEntityDir.setText("cn\\snsboss\\model");
+		txtEntityDir.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		new Label(composite, SWT.NONE);
+
+		btnCommEntityChk = new Button(composite, SWT.CHECK);
+		btnCommEntityChk.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
+		btnCommEntityChk.setText("是公用项目代码");
+		btnCommEntityChk.setSelection(true);
+		new Label(composite, SWT.NONE);
+
+		Label lblNewLabel_2 = new Label(composite, SWT.NONE);
+		lblNewLabel_2.setText("mapper");
+
+		txtMapper = new Text(composite, SWT.BORDER);
+		txtMapper.setText("cn.snsboss.dao.mapper.center");
+		GridData gd_txtMapper = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_txtMapper.widthHint = 100;
+		txtMapper.setLayoutData(gd_txtMapper);
+		new Label(composite, SWT.NONE);
+
+		Label lblMapper = new Label(composite, SWT.NONE);
+		lblMapper.setText("mapper目录");
+
+		txtMapperDir = new Text(composite, SWT.BORDER);
+		txtMapperDir.setText("cn\\snsboss\\dao");
+		txtMapperDir.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		new Label(composite, SWT.NONE);
+
+		btnCommMapperChk = new Button(composite, SWT.CHECK);
+		btnCommMapperChk.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 4, 1));
+		btnCommMapperChk.setText("是公用项目代码");
+		btnCommMapperChk.setSelection(true);
+
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		Label lblmaven = new Label(composite, SWT.NONE);
+		lblmaven.setText("网页Maven");
+
+		comHtmlMaven = new Combo(composite, SWT.NONE);
+		comHtmlMaven.setItems(new String[] { "cn\\snsboss\\web-snsboss-app", "cn\\snsboss\\web-snsboss-app" });
+		comHtmlMaven.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		comHtmlMaven.setText("cn\\snsboss\\web-snsboss-app");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+
+		Group group = new Group(composite, SWT.NONE);
+		group.setLayout(new GridLayout(8, false));
+		GridData gd_group = new GridData(SWT.FILL, SWT.CENTER, true, false, 11, 1);
+		gd_group.heightHint = 35;
+		group.setLayoutData(gd_group);
+
+		Button btnAllCheck = new Button(group, SWT.NONE);
+		GridData gd_btnAllCheck = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnAllCheck.widthHint = 120;
+		btnAllCheck.setLayoutData(gd_btnAllCheck);
+		btnAllCheck.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				treeAllCheck();
+			}
+		});
+		btnAllCheck.setText("全选");
+
+		/**
+		 * Button btnGenCode = new Button(group, SWT.NONE); GridData
+		 * gd_btnGenCode = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1,
+		 * 1); gd_btnGenCode.widthHint = 120;
+		 * btnGenCode.setLayoutData(gd_btnGenCode);
+		 * btnGenCode.addSelectionListener(new SelectionAdapter() {
+		 * 
+		 * @Override public void widgetSelected(SelectionEvent e) {
+		 *           procssGenCode(); } }); btnGenCode.setText("生成代码");
+		 **/
+		Button btnGenMaven = new Button(group, SWT.NONE);
+		btnGenMaven.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				genMavenCode();
+			}
+		});
+		btnGenMaven.setText("生成Maven代码");
+		Button btnNewButton_1 = new Button(group, SWT.NONE);
+		btnNewButton_1.setVisible(false);
+		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				saveConfig2Object();
+			}
+		});
+		GridData gd_btnNewButton_1 = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnNewButton_1.widthHint = 120;
+		btnNewButton_1.setLayoutData(gd_btnNewButton_1);
+		btnNewButton_1.setText("保存修改");
+		Button btnQryField = new Button(group, SWT.NONE);
+		btnQryField.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				choseQryField();
+			}
+		});
+		btnQryField.setText("查询字段选择");
+		new Label(group, SWT.NONE);
+		btnQryField.setVisible(false);
+
+		Button btnSelTableField = new Button(group, SWT.NONE);
+		btnSelTableField.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				showTableSel();
+			}
+		});
+		btnSelTableField.setText("列表字段选择");
+		btnSelTableField.setVisible(false);
+
+		Button btnSelAdFields = new Button(group, SWT.NONE);
+		btnSelAdFields.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				showAduList();
+			}
+		});
+		btnSelAdFields.setText("增册字段选择");
+		btnSelAdFields.setVisible(false);
+		new Label(group, SWT.NONE);
+
+		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 10, 1));
+		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+
+		tbtmNewItem = new CTabItem(tabFolder, SWT.NONE);
+		tbtmNewItem.setText("选择字段");
+
+		treeViewer = new CheckboxTreeViewer(tabFolder, SWT.BORDER | SWT.CHECK);
+		Tree tree = treeViewer.getTree();
+		tbtmNewItem.setControl(tree);
+		tree.setHeaderVisible(true);
+		tree.setHeaderVisible(true);
+		tree.setLinesVisible(true);
+
+		TreeColumn trclmnNewColumn = new TreeColumn(tree, SWT.NONE);
+		trclmnNewColumn.setWidth(504);
+		trclmnNewColumn.setText("选/字段");
+
+		Menu menu = new Menu(treeViewer.getTree());
+		MenuItem newItem = new MenuItem(menu, SWT.PUSH);
+		newItem.setText("连接子表");
+		newItem.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				openSubTableDialog(e);
+
+			}
+		});
+
+		MenuItem deleteItem = new MenuItem(menu, SWT.PUSH);
+		deleteItem.setText("删除");
+		deleteItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		treeViewer.getTree().setMenu(menu);
+
+		CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
+		tabItem.setText("手动处理内容");
+
+		txtMsg = new Text(tabFolder, SWT.BORDER | SWT.WRAP | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+		tabItem.setControl(txtMsg);
+		new Label(composite, SWT.NONE);
+
+		initUI();
+		tabFolder.setSelection(tbtmNewItem);
+	}
+
+	/**
+	 * 生成Maven代码
+	 */
+	protected void genMavenCode() {
+		resultMap = new HashMap();
+
+		resultMap.put("choseNode", treeViewer.getCheckedElements());
+		String mainTableName = txtDbTableList.getText();
+		String mainTableAsName = txtMainTableAs.getText();
+		resultMap.put("dbTableList", mainTableName);
+		resultMap.put("mainTableName", mainTableName);
+		resultMap.put("MainTableAs", mainTableAsName);
+		resultMap.put("MainFiled", txtMainFiled.getText());
+		resultMap.put("package", txtPackage.getText());
+		resultMap.put("daopackage", txtPackage.getText());
+		// xyx.dsw.dao.mapper.center
+
+		resultMap.put("basePackage", txtBasePackage.getText());
+		resultMap.put("service", txtService.getText());
+		resultMap.put("dbClassName", txtClassName.getText());
+
+		resultMap.put("entity", txtEntiry.getText());
+		resultMap.put("mapper", txtMapper.getText());
+		resultMap.put("auth", txtAuth.getText());
+
+		resultMap.put("commDao", btnCommDaoChk.getSelection() + "");
+		resultMap.put("commService", btnCommServiceChk.getSelection() + "");
+		resultMap.put("commEntity", btnCommEntityChk.getSelection() + "");
+		resultMap.put("commMapper", btnCommMapperChk.getSelection() + "");
+		resultMap.put("Dir4business", txtDir4business.getText() + "");
+		resultMap.put("txtMapperDir", txtMapperDir.getText() + "");
+
+		resultMap.put("txtEntityDir", txtEntityDir.getText() + "");
+
+		resultMap.put("txtServiceDir", txtServiceDir.getText() + "");
+		resultMap.put("txtControlerModel", txtControlerModel.getText() + "");
+
+		resultMap.put("comHtmlMaven", comHtmlMaven.getText() + "");
+
+		String funcPackage = this.txtFuncPackage.getText();
+		DevopsMavenCodeGenerater gen = new DevopsMavenCodeGenerater();
+		RootModel root = new RootModel();
+		Object data[] = treeViewer.getCheckedElements();
+		ArrayList<ColumnModel> listCol = new ArrayList<ColumnModel>();
+		ArrayList<ColumnModel> listColMain = new ArrayList<ColumnModel>();
+		TableModel table = new TableModel();
+		table.setTableName(mainTableName);
+		table.setTableNameAs(mainTableAsName);
+		table.appSqlTableJoin(table.getTableName() + " " + table.getTableNameAs());
+
+		for (int i = 0; i < data.length; i++) {
+			Node node = (Node) data[i];
+			node.getColumn().setTableAs(mainTableAsName);
+			node.getColumn().setTableName(mainTableName);
+			node.getColumn().setMainTableType(0);
+			listCol.add(node.getColumn());
+			listColMain.add(node.getColumn());
+
+			List<Node> linkNodeList = node.getChildren();
+			Node firstJoinNode = null;
+			for (int j = 0; j < linkNodeList.size(); j++) {
+				Node linkNode = linkNodeList.get(j);
+				firstJoinNode = linkNode;
+				linkNode.getColumn().setMainTableType(1);
+				listCol.add(linkNode.getColumn());
+
+			}
+			if (firstJoinNode != null) {
+
+				table.appSqlTableJoin(" left join " + firstJoinNode.getColumn().getTableName() + " "
+						+ firstJoinNode.getColumn().getTableAs() + " " + "");
+				table.appSqlTableJoin(" on " + firstJoinNode.getMainTableNameAs() + "." + firstJoinNode.getMainLinedField() + " = "
+						+ firstJoinNode.getRefTablesAs() + "." + firstJoinNode.getRefField() + " \n ");
+
+			}
+		}
+
+		table.setColumnsArr(listCol.toArray());
+		table.setColumnsMainArr(listColMain.toArray());
+
+		resultMap.put("logicalName", tableDesc);
+		resultMap.put("sysdateOut", getSysDate());
+		root.addChild(table);
+
+		String lastModel = txtPackage.getText();
+		int lastPos = lastModel.lastIndexOf('.');
+		if (lastPos > -1) {
+			lastModel = lastModel.substring(lastPos + 1);
+			resultMap.put("htmlModel", lastModel);
+		}
+		try {
+			File dir = new File(txtGenCodeComm.getText());
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+
+			gen.generate(txtGenCodeComm.getText(), txtGenCodeProject.getText() + DbRes.getConvertName(tableName), root, resultMap,
+					funcPackage,null,null);
+			MessageDialog.openInformation(this.getShell(), "提示",
+					"代码已生成，code目录下的文件请复制到项目根目录下，第二页签下的resultMap配置 请手动copy到configurationDsw.xml");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void copyProj() {
+		File srcDir = new File(txtGenCodeComm.getText());
+		File destDir = new File(txtProjDir.getText());
+		MessageDialog.openInformation(this.getShell(), "提示", "已复制代码至正式项目对应目录");
+		try {
+			FileUtils.copyDirectory(srcDir, destDir);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	protected void showAduList() {
+		QueryTableFieldSelDialog qryDialog = new QueryTableFieldSelDialog(this.getShell(), SWT.APPLICATION_MODAL | SWT.CLOSE, this.res,
+				treeViewer.getInput(), 1);
+		qryDialog.open();
+		this.aduOut = qryDialog.getChoseData();
+
+	}
+
+	protected void showTableSel() {
+		QueryTableFieldSelDialog qryDialog = new QueryTableFieldSelDialog(this.getShell(), SWT.APPLICATION_MODAL | SWT.CLOSE, this.res,
+				treeViewer.getInput(), 2);
+		qryDialog.open();
+		this.qryOutArr = qryDialog.getChoseData();
+
+	}
+
+	protected void choseQryField() {
+		QueryTableFieldSelDialog qryDialog = new QueryTableFieldSelDialog(this.getShell(), SWT.APPLICATION_MODAL | SWT.CLOSE, this.res,
+				treeViewer.getInput(), 1);
+		qryDialog.open();
+		this.tableOut = qryDialog.getChoseData();
+
+	}
+
+	protected void saveConfig2Object() {
+		String key = txtPackage.getText() + txtDbTableList.getText();
+
+		SaveConfig saveConf = new SaveConfig();
+		saveConf.setKey(key);
+		saveConf.setPackage(txtPackage.getText());
+	}
+
+	protected void treeAllCheck() {
+		if (!isCheck) {
+			treeViewer.setAllChecked(true);
+			isCheck = true;
+		} else {
+			treeViewer.setAllChecked(false);
+			isCheck = false;
+		}
+
+	}
+
+	protected void procssGenCode() {
+		resultMap = new HashMap();
+		resultMap.put("choseNode", treeViewer.getCheckedElements());
+		String mainTableName = txtDbTableList.getText();
+		String mainTableAsName = txtMainTableAs.getText();
+		resultMap.put("dbTableList", mainTableName);
+		resultMap.put("mainTableName", mainTableName);
+		resultMap.put("MainTableAs", mainTableAsName);
+		resultMap.put("MainFiled", txtMainFiled.getText());
+		resultMap.put("package", txtPackage.getText());
+		resultMap.put("daopackage", txtPackage.getText());
+		// xyx.dsw.dao.mapper.center
+
+		resultMap.put("basePackage", txtBasePackage.getText());
+		resultMap.put("service", txtService.getText());
+		resultMap.put("dbClassName", txtClassName.getText());
+
+		resultMap.put("entity", txtEntiry.getText());
+		resultMap.put("mapper", txtMapper.getText());
+		resultMap.put("auth", txtAuth.getText());
+
+		String funcPackage = this.txtFuncPackage.getText();
+		RootModel root = new RootModel();
+		Object data[] = treeViewer.getCheckedElements();
+		ArrayList<ColumnModel> listCol = new ArrayList<ColumnModel>();
+		ArrayList<ColumnModel> listColMain = new ArrayList<ColumnModel>();
+		TableModel table = new TableModel();
+		table.setTableName(mainTableName);
+		table.setTableNameAs(mainTableAsName);
+		table.appSqlTableJoin(table.getTableName() + " " + table.getTableNameAs());
+
+		for (int i = 0; i < data.length; i++) {
+			Node node = (Node) data[i];
+			node.getColumn().setTableAs(mainTableAsName);
+			node.getColumn().setTableName(mainTableName);
+			node.getColumn().setMainTableType(0);
+			listCol.add(node.getColumn());
+			listColMain.add(node.getColumn());
+
+			List<Node> linkNodeList = node.getChildren();
+			Node firstJoinNode = null;
+			for (int j = 0; j < linkNodeList.size(); j++) {
+				Node linkNode = linkNodeList.get(j);
+				firstJoinNode = linkNode;
+				linkNode.getColumn().setMainTableType(1);
+				listCol.add(linkNode.getColumn());
+
+			}
+			if (firstJoinNode != null) {
+
+				table.appSqlTableJoin(" left join " + firstJoinNode.getColumn().getTableName() + " "
+						+ firstJoinNode.getColumn().getTableAs() + " " + "");
+				table.appSqlTableJoin(" on " + firstJoinNode.getMainTableNameAs() + "." + firstJoinNode.getMainLinedField() + " = "
+						+ firstJoinNode.getRefTablesAs() + "." + firstJoinNode.getRefField() + " \n ");
+
+			}
+		}
+
+		table.setColumnsArr(listCol.toArray());
+		table.setColumnsMainArr(listColMain.toArray());
+
+		// txtMsg.setText("");
+		// txtMsg.setText("<typeAlias type=\"cn.snsboss.dao.entity.center." +
+		// funcPackage + "." + table.getTableNameOut() + "Entry\" alias=\""
+		// + table.getTableNameOut() + "MAP\" />");
+
+		resultMap.put("logicalName", tableDesc);
+		resultMap.put("sysdateOut", getSysDate());
+
+		root.addChild(table);
+
+		String lastModel = txtPackage.getText();
+		int lastPos = lastModel.lastIndexOf('.');
+		if (lastPos > -1) {
+			lastModel = lastModel.substring(lastPos + 1);
+			resultMap.put("htmlModel", lastModel);
+		}
+		try {
+			File dir = new File(txtGenCodeComm.getText());
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+
+			MessageDialog.openInformation(this.getShell(), "提示",
+					"代码已生成，code目录下的文件请复制到项目根目录下，第二页签下的resultMap配置 请手动copy到configurationDsw.xml");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static String getSysDate() {
+		return dateToString(new Date(), Formater_yyyy_MM_dd_HH_mm_ss);
+	}
+
+	public static String dateToString(Date date, String format) {
+		if (date == null)
+			return "";
+		SimpleDateFormat formater = new SimpleDateFormat(isNull(format) ? "yyyy-MM-dd HH:mm:ss" : format.trim());
+		return formater.format(date);
+	}
+
+	public static boolean isNull(String str) {
+		str = str != null ? str.trim() : str;
+		return str == null || "".equals(str) ? true : false;
+	}
+
+	/**
+	 * 初始化界面
+	 */
+	private void initUI() {
+
+		treeViewer.setContentProvider(new TVContentProvider());
+
+		treeViewer.setLabelProvider(new TVLabelProvider());
+
+		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			public void selectionChanged(SelectionChangedEvent event) {
+
+				if (event.getSelection().isEmpty()) {
+					System.out.println("Selected Nothing");
+					return;
+
+				}
+
+				if (event.getSelection() instanceof IStructuredSelection) {
+
+					IStructuredSelection selection = (IStructuredSelection) event
+
+					.getSelection();
+
+					StringBuffer selected = new StringBuffer();
+
+					for (Iterator iterator = selection.iterator(); iterator
+
+					.hasNext();) {
+
+						Object element = (Node) iterator.next();
+
+						String value = ((Node) element).getName();
+
+						selected.append(value);
+
+						selected.append(", ");
+
+					}
+
+					// remove the trailing comma space pair
+
+					if (selected.length() > 0) {
+
+						selected.setLength(selected.length() - 2);
+
+					}
+
+					System.out.println(selected.toString());
+				}
+			}
+		});
+		String pkStr = "";
+		if (tableName != null) {
+			txtDbTableList.add(tableName);
+			root = new RootNode();
+
+			for (int i = 0; i < columnModels.size(); i++) {
+				ColumnModel column = columnModels.get(i);
+				if (column.isPrimaryKey()) {
+					pkStr = column.getColumnName();
+				}
+				Node node = new Node();
+				node.setName(column.getColumnName());
+				node.setColumnModel(column);
+				root.addChild(node);
+			}
+			treeViewer.setInput(root);
+		} else {
+
+			root = new RootNode();
+
+			treeViewer.setInput(root);
+
+			Class<?> driverClass;
+			try {
+				driverClass = classLoader.loadClass(res.getJdbcDriver());
+				try {
+					dbinfo = new DatabaseInfo(driverClass);
+				} catch (InstantiationException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				} catch (IllegalAccessException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+			} catch (ClassNotFoundException e3) {
+
+				e3.printStackTrace();
+			}
+
+			dbinfo.setURI(res.getDbUrl());
+			dbinfo.setUser(res.getUser());
+			dbinfo.setPassword(res.getPassword());
+			dbinfo.setCatalog(res.getCatalog());
+			dbinfo.setSchema(res.getSchema());
+			dbinfo.setEnableView(false);
+			dbinfo.setAutoConvert(false);
+
+			ArrayList<String> tableNames = new ArrayList<String>();
+
+			try {
+				List<String> tableList = dbinfo.loadTables();
+				String[] item = new String[tableList.size()];
+				try {
+					int i = 0;
+					for (String tableName : tableList) {
+						item[i] = tableName;
+						i++;
+						tableNames.add(tableName);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				txtDbTableList.setItems(item);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		txtDbTableList.setText(tableName);
+		txtMainTableAs.setText(DbRes.getLowConvertName(tableName));
+		txtClassName.setText(DbRes.getConvertName(tableName));
+		// this.txtPackage.setText(DbRes.getLowConvertName(tableName));
+		this.txtFuncPackage.setText(DbRes.getLowConvertName(tableName));
+
+		if (pkStr == null || pkStr.equals(""))
+			pkStr = "id";
+		txtMainFiled.setText(pkStr);
+		this.txtGenCodeComm.setText(txtGenCodeComm.getText() + DbRes.getConvertName(tableName));
+		// this.txtGenCodeProject.setText(txtGenCodeProject.getText() +
+		// DbRes.getConvertName(tableName));
+
+	}
+
+	protected Shell getShell() {
+		return shell;
+	}
+
+	private void changeTable(DbRes res, String tables[]) {
+		// dbTableList
+		Connection conn = null;
+		RootModel root = res.getRoot();
+		IDialect dialect = DialectProvider.getDialect(res.getRoot().getDialectName());
+		ISchemaLoader loader = dialect.getSchemaLoader();
+
+		try {
+			conn = dbinfo.connect();
+			loader.loadSchema(root, DialectProvider.getDialect(root.getDialectName()), conn, tables, dbinfo.getCatalog(),
+					dbinfo.getSchema(), dbinfo.isAutoConvert());
+
+		} catch (Exception ex) {
+			DBPlugin.logException(ex);
+
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 选择连接窗口
+	 * 
+	 * @param e
+	 */
+	private void openSubTableDialog(SelectionEvent e) {
+		Object ojb = e.widget;
+		ISelection select = treeViewer.getSelection();
+		IStructuredSelection selection = (IStructuredSelection) select;
+		for (Iterator iterator = selection.iterator(); iterator.hasNext();) {
+
+			Node element = (Node) iterator.next();
+			String tableName = txtDbTableList.getText();
+			String tableAs = txtMainTableAs.getText();
+			element.getColumn().setTableName(tableName);
+			element.getColumn().setTableAs(tableAs);
+			System.out.println("" + element.getName());
+
+			DevopsLinkSubFiledDialog subLinkDialog = new DevopsLinkSubFiledDialog(getShell(), SWT.APPLICATION_MODAL | SWT.CLOSE, element,
+					tableName, element.getName(), res, txtDsw.getText());
+			subLinkDialog.open();
+			HashMap resultMap = subLinkDialog.getResult();
+
+			if (resultMap.get("CHOSE") == null)
+				return;
+			Object choseRef[] = (Object[]) resultMap.get("choseNode");
+			String refField = (String) resultMap.get("refField");
+			String refTablesAs = (String) resultMap.get("refTablesAs");
+			String refTableName = (String) resultMap.get("refTables");
+
+			element.clearnChildNode();
+			for (int i = 0; i < choseRef.length; i++) {
+				Node no = (Node) choseRef[i];
+				no.getColumn().setMainTableType(1);
+				no.getColumn().setTableAs(refTablesAs);
+				no.getColumn().setTableName(refTableName);
+
+				no.setRefTable(refTableName);
+				no.setRefTablesAs(refTablesAs);
+				no.setRefField(refField);
+				no.setMainLinedField(element.getName());
+				no.setMainLinkedtableName(element.getColumn().getTableName());
+				no.setMainTableNameAs(element.getColumn().getTableAs());
+				element.addChild(no);
+			}
+			// treeViewer.setInput(root);
+			// treeViewer.getTree().update();
+			treeViewer.refresh(element);
+			// treeViewer.refresh();
+		}
+	}
+}

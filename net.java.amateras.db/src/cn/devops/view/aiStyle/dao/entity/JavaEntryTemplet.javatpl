@@ -1,0 +1,60 @@
+package ${entity}.${modelName};
+
+import java.util.*;
+import java.io.Serializable;
+import java.math.*;
+import ${frameWorkPath}.aop.AutoIncrease;
+import ${frameWorkPath}.aop.Column;
+import ${frameWorkPath}.aop.Entity;
+import ${frameWorkPath}.aop.Id;
+import ${frameWorkPath}.aop.Table;
+
+//${MainTableAs}
+
+@Entity
+@Table(name="${table.tableName}")
+public class ${table.tableNameOut}PO implements Serializable {
+   
+        
+#foreach($column in $table.columns) 
+        /**
+          * $!column.logicalName
+        */
+#if($column.isPrimaryKey())
+        @Column(name="$column.columnName.toLowerCase()")
+        @Id
+	    // @AutoIncrease
+	    private   $column.columnTypeName   $column.columnNameOutLow ;
+#else
+		@Column(name="$column.columnName.toLowerCase()")
+		private   $column.columnTypeName   $column.columnNameOutLow ;
+	    
+#end
+        
+#end
+    
+     
+        //默认空构造函数
+	    public  ${table.tableNameOut}PO(){
+	
+	    }
+	
+	
+		//get set 方法
+#foreach($column in $table.columns) 
+        /**
+          * $!column.logicalName
+        */
+        public void set${column.columnNameOutUp}(${column.columnTypeName} ${column.columnNameOutLow}){
+	      this.${column.columnNameOutLow}=${column.columnNameOutLow};    
+        }
+         
+	    /**
+          * @return $!column.logicalName
+        */
+        public ${column.columnTypeName} get${column.columnNameOutUp}(){ 
+	      return this.${column.columnNameOutLow};    
+        } 
+#end       
+     
+}

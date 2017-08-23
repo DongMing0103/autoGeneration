@@ -1,0 +1,357 @@
+package $!{service}.${modelName};
+
+//${MainTableAs}
+import java.util.*;
+import java.text.SimpleDateFormat;
+import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ${package}.common.annotation.FavoriteAnnotation;
+import ${frameWorkPath}.plugin.Page;
+import ${frameWorkPath}.service.BaseServiceImpl;
+import ${frameWorkPath}.util.ParamMap;
+
+
+import ${package}.common.util.*;
+import ${package}.dao.entity.${modelName}.${table.tableNameOut}PO;
+import ${package}.dao.entity.business.CrmBusinessPO;
+import ${package}.dao.entity.business.CrmBusinessTailRecordPO;
+import ${package}.service.vo.${modelName}.${table.tableNameOut}VO;
+import ${package}.service.vo.business.CrmBusinessTailRecordVO;
+import ${package}.service.param.${modelName}.${table.tableNameOut}Param;
+import ${package}.service.param.business.CrmBusinessTailRecordParam;
+
+import ${package}.service.serviceInter.${modelName}.I${table.tableNameOut}Service;
+import ${package}.service.serviceInter.business.ICrmBusinessService;
+import ${package}.common.enums.*;
+import ${package}.common.exceptions.*;
+import ${package}.common.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ${package}.dao.entity.canteen.CrmCanteenBaseInfoPO;
+
+
+/**
+ *
+   
+ * @description   ${table.tableNameOutLow} 对应的（业务逻辑类）
+ *
+ */
+@Service
+@Transactional
+public class ${table.tableNameOut}${serviceFileName}Impl extends BaseServiceImpl implements I${table.tableNameOut}Service {
+  
+     // 日志服务对象
+	 protected static final Logger logger = LoggerFactory.getLogger(${table.tableNameOut}${serviceFileName}Impl.class);
+     
+     @Resource
+     ICrmBusinessService iCrmBusinessService;
+     
+     
+     
+     /**
+     * $!table.logicalName 默认构造函数
+     */
+     
+	 public ${table.tableNameOut}${serviceFileName}Impl() {
+	   
+	 }
+	 
+    //自定义方法
+    //*****************************************************************************************************************
+    
+    /**
+     * PO转换为VO
+     * @param param
+     * @return
+     */
+    private List<${table.tableNameOut}VO> convertPOToVO(List<${table.tableNameOut}PO> ${table.tableNameOut.toLowerCase()}List){
+    	List<${table.tableNameOut}VO> ${table.tableNameOut.toLowerCase()}VoList = new ArrayList<${table.tableNameOut}VO>();
+    	if (CollectionUtils.isEmpty(${table.tableNameOut.toLowerCase()}List)) {
+    		return ${table.tableNameOut.toLowerCase()}VoList;
+    	}
+    	for (${table.tableNameOut}PO tag : ${table.tableNameOut.toLowerCase()}List) {
+    		${table.tableNameOut}VO tagVo = BeanConvertor.copy(tag,${table.tableNameOut}VO.class);
+    		${table.tableNameOut.toLowerCase()}VoList.add(tagVo);
+    	}
+    	return ${table.tableNameOut.toLowerCase()}VoList;
+    }
+    
+    #if($canCategory == "true")
+    /**
+     * 分类查询
+     * @param param
+     * @return
+     */
+    
+    @Override
+    public Page<${table.tableNameOut}PO> findCateAndStop(${table.tableNameOut}Param param) {
+    	ParamMap paramMap = new ParamMap(param);
+    	return findPageByParams(${table.tableNameOut}PO.class,new Page<${table.tableNameOut}PO>(param.getOffset(),param.getLimit())
+    					,"${table.tableNameOut}POMapper.findSaveStop",paramMap);
+    }
+    #end
+    
+     #if($canStopStart == "true")
+    /**
+     * 变更启用停用
+     * @param param
+     * @return
+     */
+    @Override
+    public void updateEnabled(Long id, Short enabled) throws BizException {
+    	${table.tableNameOut}PO po = this.get(${table.tableNameOut}PO.class,id);
+    	
+    	if (po != null) {
+    		po.setEnabled(enabled);
+    		po.setUpdateTime(new Date());
+			/*if (Short.compare(enabled,Short.valueOf(${table.tableNameOut}EnabledEnum.STOP.getCode())) == 0) {
+				po.setIsRecommend(${table.tableNameOut}StatusRecEnum.PRODUCT_TYPE.getShortCode());
+				jaiPdRecommendService.updateDeleteFlagByProductId(id);
+				Short status = po.getStatus();
+				if (status != null && Short.compare(status,${table.tableNameOut}StatusEnum.PULL_UP.getCode()) == 0) {
+					po.setStatus(${table.tableNameOut}StatusEnum.PREPARE_UP.getShortCode());
+				}
+			}*/  
+			this.update(po);  		
+    	} else {
+    		throw new BizException(BaseExceptionEnum.UPDATE_FAILURE,"${table.tableNameOut}${serviceFileName}Impl-updateEnabled");
+    	}
+    }
+    #end
+    
+    #if($canUpDown == "true")
+    /**
+     * 变更状态
+     *
+     * @param id
+     * @param status
+     * @throws BizException
+     */
+    @Override
+    @FavoriteAnnotation(description = "修改产品状态（1.草稿 2.下架 3.待上架 4.上架）")
+    public void updateStatus(Long id, Short status) throws BizException {
+        ${table.tableNameOut}PO po = this.get(${table.tableNameOut}PO.class, id);
+        if (po != null) {
+            po.setStatus(status);
+            //po.setUpdateTime(new Date());
+            this.update(po);
+        } else {
+            throw new BizException(BaseExceptionEnum.UPDATE_FAILURE, "${table.tableNameOut}${serviceFileName}Impl-updateStatus");
+        }
+    }
+    #end
+    
+    /**
+     * 查询
+     */
+    @Override
+    public Page<${table.tableNameOut}VO> queryPage(${table.tableNameOut}Param param) {
+    	ParamMap paramMap = new ParamMap(param);
+    	Page<${table.tableNameOut}PO> ${table.tableNameOut.toLowerCase()}List = findPageByParams(${table.tableNameOut}PO.class,new Page<${table.tableNameOut}PO>(param.getOffset(),param.getLimit()),"${table.tableNameOut}POMapper.queryPage",paramMap);
+    	List<${table.tableNameOut}VO> rows = new ArrayList<${table.tableNameOut}VO>();
+    	int total = 0;
+    	if(${table.tableNameOut.toLowerCase()}List.result != null){
+    		rows = convertPOToVO(${table.tableNameOut.toLowerCase()}List.result);
+    		total = ${table.tableNameOut.toLowerCase()}List.getTotalResult();
+    	}    	
+    	Page<${table.tableNameOut}VO> pageResult = new Page<${table.tableNameOut}VO>();
+    	pageResult.result = rows;
+    	pageResult.setTotalResult(total);
+    	return pageResult;
+    	
+    }
+    
+    /**
+     * 根据主键查询详情
+     * @param param
+     * @return
+     */
+    
+    @Override
+    public List<${table.tableNameOut}PO> listByParam(${table.tableNameOut}Param ${table.tableNameOut.toLowerCase()}Param){
+    	ParamMap paramMap = new ParamMap(${table.tableNameOut.toLowerCase()}Param);
+    	return commonDao.listByParams(${table.tableNameOut}PO.class,"${table.tableNameOut}POMapper.queryList",paramMap);
+    }
+    
+    /**
+     * 删除
+     */
+    @Override
+    @Transactional
+    public void deleteById(Long id) throws BizException{
+    	/*Long id = Long.parseLong(ids);
+    	${table.tableNameOut}PO po = this.get(${table.tableNameOut}PO.class,id);
+    	if(po != null){
+    		po.setDeleteFlag(DeleteFlagEnum.DELETED.getShortCode());
+    		this.update(po);
+    	}else{
+    		throw new BizException(BaseExceptionEnum.UPDATE_FAILURE);
+    	}*/
+    	ParamMap paramMap = new ParamMap();
+        paramMap.put("id", id);
+        this.execute("${table.tableNameOut}POMapper.deleteById", paramMap);
+    }
+    
+    #if($canDeleteSql == "true")
+    /**
+     * 批量删除
+     */
+    @Override
+    public void deleteByIds(String ids) throws BizException{
+    	Long[] idl = CollectionsUtil.transStringToArray(ids, ",");
+    	List<${table.tableNameOut}PO> listPo = new ArrayList<${table.tableNameOut}PO>(idl.length);
+    	for (int i=0; i<idl.length; i++) {
+    		${table.tableNameOut}PO po = this.get(${table.tableNameOut}PO.class, idl[i]);
+    		if (po != null) {
+    			po.setDelFlag(DeleteFlagEnum.DELETED.getNormalCode());
+    			listPo.add(po);
+    		} else {
+    			throw new BizException(BaseExceptionEnum.UPDATE_FAILURE);
+    		}
+    	}
+		for (${table.tableNameOut}PO po : listPo) {
+			this.update(po);
+		}
+    	
+    }
+    #end
+    
+    /**
+     * 新增
+     */
+    @Override
+    public void add(${table.tableNameOut}Param param){
+    	${table.tableNameOut}PO ${table.tableNameOut.toLowerCase()}PO = BeanConvertor.copy(param,${table.tableNameOut}PO.class);
+    	this.save(${table.tableNameOut.toLowerCase()}PO);
+    }
+    
+    /**
+     * 新增保存
+     */
+    @Override
+    public void saveEntity(${table.tableNameOut}PO po){
+        //po.setId(SystemCacheHelper.genNextIDValue(DatabaseTableNameEnum.${table.tableNameOut}));
+     	this.save(po);
+    }
+    
+    /**
+     * update
+     */
+    @Override
+    public void updateEntity(${table.tableNameOut}PO po){
+     	this.update(po);
+    }
+    
+    /**
+     * 根据id查询
+     */
+    @Override
+    public ${table.tableNameOut}PO findById(Long id) {
+    	ParamMap paramMap = new ParamMap();
+    	paramMap.put("id",id);
+    	List<${table.tableNameOut}PO> list = listByParams(${table.tableNameOut}PO.class, "${table.tableNameOut}POMapper.findById", paramMap);
+    	if (BeanUtils.isNotEmpty(list)) {
+    		return list.get(0);
+    	}
+    	return null;
+    }
+    
+    #if($Excel == "true")
+    /**
+     * 导出查询
+     */
+     @Override
+    public Page<${table.tableNameOut}VO> findPageSelect(${table.tableNameOut}Param param) {
+    	ParamMap paramMap = new ParamMap(param);
+    	Page<${table.tableNameOut}PO> ${table.tableNameOut.toLowerCase()}List = findPageByParams(${table.tableNameOut}PO.class, 
+    		new Page<${table.tableNameOut}PO>(param.getOffset(), param.getLimit()), "${table.tableNameOut}POMapper.queryPage", paramMap);
+    	List<${table.tableNameOut}VO> rows = new ArrayList<${table.tableNameOut}VO>();
+    	int total = 0;
+    	if (${table.tableNameOut.toLowerCase()}List != null) {
+    		for (int i = 0; i < ${table.tableNameOut.toLowerCase()}List.result.size(); i++) {
+    			${table.tableNameOut}PO ${table.tableNameOut.toLowerCase()}PO = this.findById(${table.tableNameOut.toLowerCase()}List.result.get(i).getId());
+    			${table.tableNameOut}PO targetPO = ${table.tableNameOut.toLowerCase()}List.result.get(i);
+    			if (BeanUtils.isNotEmpty(${table.tableNameOut.toLowerCase()}PO)) {
+    				${table.tableNameOut}VO ${table.tableNameOut.toLowerCase()}VO = new ${table.tableNameOut}VO();
+    				${table.tableNameOut.toLowerCase()}VO = BeanConvertor.convertBean(targetPO, ${table.tableNameOut}VO.class);
+    				//${table.tableNameOut.toLowerCase()}VO.setName(${table.tableNameOut.toLowerCase()}PO.getName());
+    				rows.add(i, ${table.tableNameOut.toLowerCase()}VO);
+    			}
+    		}
+    		total = ${table.tableNameOut.toLowerCase()}List.getTotalResult();
+    	}
+    	Page<${table.tableNameOut}VO> pageResult = new Page<${table.tableNameOut}VO>();
+    	pageResult.result = rows;
+    	pageResult.setTotalResult(total);
+    	return pageResult;
+    }
+    #end
+    
+    #if($Trace == "true")
+    /**
+     * 跟踪记录查询
+     */
+    @Override
+    public Page<${table.tableNameOut}VO> queryList(${table.tableNameOut}Param param) {
+    	ParamMap paramMap = new ParamMap(param);
+		Page<${table.tableNameOut}PO> crmbusinesstailrecordList=findPageByParams(${table.tableNameOut}PO.class,new Page<${table.tableNameOut}PO>(param.getOffset(),param.getLimit()),"${table.tableNameOut}POMapper.queryPage",paramMap);
+    	List<${table.tableNameOut}VO> rows = new ArrayList<${table.tableNameOut}VO>();
+    	int total = 0;
+    	if(crmbusinesstailrecordList.result != null){
+    		for(int i=0;i<crmbusinesstailrecordList.result.size();i++){
+    			${table.tableNameOut}PO recordPO = crmbusinesstailrecordList.result.get(i);
+    			//查询业务员名字
+    			
+    			CrmBusinessPO cBusinessPO = iCrmBusinessService.findByBusinessId(recordPO.getBusinessId());
+    			${table.tableNameOut}VO cVo = BeanConvertor.convertBean(recordPO, ${table.tableNameOut}VO.class);
+    			if(cBusinessPO!=null){
+    				// 注:VO中内容为空 手动添加相应get/set方法
+    				cVo.setBusinessName(cBusinessPO.getName());//业务员名字
+    				rows.add(i,cVo);
+    			}
+    			if(BeanUtils.isNotEmpty(recordPO.getTailNature())){
+    				if(recordPO.getTailNature().equals(1)){
+    					cVo.setTailNatureName("电话联系");
+    				}
+    				if(recordPO.getTailNature().equals(2)){
+    					cVo.setTailNatureName("上门拜访");
+    				}
+    			}
+    			if(BeanUtils.isNotEmpty(cVo.getTailTimeStart()) && BeanUtils.isNotEmpty(cVo.getTailTimeEnd())){
+    				SimpleDateFormat format = new SimpleDateFormat("MM-dd hh:mm");
+    				String data1 = format.format(cVo.getTailTimeStart());
+    				String data2 = format.format(cVo.getTailTimeEnd());
+    				cVo.setTailTimeStartAndEnd(data1+"——"+data2);
+    			}
+    			
+    			
+    		}
+    		total = crmbusinesstailrecordList.getTotalResult();
+    	}    	
+    	Page<${table.tableNameOut}VO> pageResult = new Page<${table.tableNameOut}VO>();
+    	pageResult.result = rows;
+    	pageResult.setTotalResult(total);
+    	return pageResult;    
+    }
+    #end
+    
+    /**
+     * 根据canteenId查询对象
+     */
+    @Override
+    public CrmCanteenBaseInfoPO findByCanteenId(Long canteenId) {
+    	ParamMap paramMap = new ParamMap();
+    	paramMap.put("canteenId", canteenId);
+    	List<CrmCanteenBaseInfoPO> cInfoPOs = listByParams(CrmCanteenBaseInfoPO.class, "CrmCanteenBaseInfoPOMapper.findByCanteenId", paramMap);
+    	if (BeanUtils.isNotEmpty(cInfoPOs)) {
+    		return cInfoPOs.get(0);
+    	}
+    	return null;
+    	
+    }
+}
+

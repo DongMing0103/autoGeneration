@@ -1,0 +1,397 @@
+/* ${table.tableNameOut} */
+
+//实例化
+
+var table = jqueryHadTag"#GGGGGG${table.tableNameOut}Table");
+ 
+//新增按钮事件
+$("#btn_add").on('click', function () {
+    var url = '/${table.tableNameOut.toLowerCase()}/add${table.tableNameOut}';
+    layer.open({
+        type:2,
+        title:'新增',
+        content:[url,'yes'],
+        area:['1000px','700px'],
+    })
+});
+/**
+ * 显示修改
+ * @param id
+ */
+function showEdit(id) {
+	var url = '/${table.tableNameOut.toLowerCase()}/edit${table.tableNameOut}/'+id;
+    layer.open({
+        type:2,
+        title:'编辑',
+        content:[url,'yes'],
+        area:['1000px','700px'],
+    })
+}
+//关闭文章按钮事件
+$('#article-addpage .add-title>span:last-child, .add-no').on('click', function () {
+    $('.poptip').remove();
+    $('#articleForm input').each(function () {
+        if ($(this).hasClass('red-border')) {
+            $(this).removeClass('red-border')
+        }
+    })
+    $('#article-addpage, .article-model').fadeOut();
+});
+
+
+//表单验证
+$("form").validate({
+    onfocusout: false,
+    onclick: false,
+    onkeyup: false,
+    showErrors: function (errorMap, errorList) {
+        if (errorList.length) {
+            layer.alert(errorList[0].message, function (index) {
+                layer.close(index);
+                $(errorList[0].element).focus();
+            });
+        }
+    }
+});
+
+
+function refresh_table() {
+    table.bootstrapTable('refresh');
+}
+
+/**
+ * 是否推介
+ */
+function isRecFormatter(value, row, index) {
+    var status = row.status;
+    if (value === "" || value == undefined) {
+        return "";
+    }
+    if(status==4){
+        if (value == 0) {
+
+            return "否";
+        }
+        if (value == 1) {
+            return "<font color='#ff7f50'>是[已排序:" + row.sortNo + "]</font>";
+        }
+    }else{
+        return "-";
+    }
+
+
+}
+
+
+#if($canUpDown == "true")
+/** 
+ * 状态显示 
+ */
+function statusFormatter(status, row, index) {
+    if (status === "" || status == undefined) {
+        return "";
+    }
+    var enabled = row.enabled;
+    if (enabled == 1) {
+        return "停用";
+    } else {
+        if (status == 1) {
+            return "暂存";
+        }
+        if (status == 2) {
+            return "下架";
+        }
+        if (status == 3) {
+            return "待上架";
+        }
+        if (status == 4) {
+            return "上架";
+        }
+
+    }
+}
+#end
+
+#if($canUpDown == "true")
+/**
+ *  操作选项
+ */
+function operationFormatter(value, row, index) {
+    var formatter = "";
+    var enabled = row.enabled;
+    
+    //查看
+    var formatter = '&nbsp;<a class="article-preview" href="javascript:void(0)" onclick="lookArticle('+row.id+')">查看</a>';
+	//停用    
+    if (enabled == 1) {
+        formatter += '&nbsp;<a class="article-previwe1" href="javascript:void(0)" onclick="updatteEnabledOrDisable('+row.id+',0)">启用</a>';
+   	//启用
+    } else if (enabled == 0){
+      //暂存
+      if (row.status == 0) {
+      	//待上架
+      } else if (row.status == 8) {
+      	//上架
+      } else if (row.status == 2) {
+      	if (row.isRecommend == '0') {
+      		formatter += '&nbsp; <a class="article-release J_reloadPwd" title="推荐" data-id='+row.id+'>推荐</a>';
+      	}
+      	if (row.isRecommend == '1') {
+      		formatter += '&nbsp; <a class="article-release J_reloadPwd" title="推荐" data-id='+row.id+'>推荐</a>';
+      	}
+      	if (row.isRecommend == '2') {
+      		formatter += '&nbsp; <a title="推荐并置顶" onclick=recommendPartner(" + row.id + ","+ row.isRecommend + "," + index + ")>推荐并置顶</a>';
+      	}
+      	//下架
+      } else if (row.status == 3) {
+      	
+      }
+      formatter += '&nbsp; <a class="article-preview1" href="javascript:void(0)" onclick="updateEnabledOrDisable('+ row.id +',1)">停用</a>';
+    }
+
+    return formatter;
+}
+#end
+
+/**
+ *  操作选项
+ */ 
+function operationFormatter(value,row,index){
+	//var static = row.static;
+	//var isRec = row.isRec;
+	var str = "<a onclick='showEdit("+row.id+")'>编辑</a>";
+	
+	str =str+ "&nbsp;&nbsp;<a onclick='doDelete("+row.id+")'>删除</a>";
+	
+	if(value == 1){
+		str += "&nbsp;<a data-categoryname='"+row.categoryName+"' onclick='changeStatus(this,0,"+row.id+")'>启用$!garbled</a>";
+	}else{
+		str += "&nbsp;<a data-categoryname='"+row.categoryName+"' onclick='changeStatus(this,1,"+row.id+")'>停用$!garbled</a>";
+		
+		/*if(static == 4){
+			if(isRec == 0){
+				str += "&nbsp;<a data-categoryname='"+row.categoryName+"' onclick='changeIsRec(this,1,"+row.id+")'>推荐$!garbled</a>";
+			}else{
+				str += "&nbsp;<a data-categoryname='"+row.categoryName+"' onclick='changeIsRec(this,0,"+row.id+")'>取消推荐$!garbled</a>";
+			}
+		}*/
+		
+	}
+	 
+	return str;
+}
+
+/** 
+ * 删除操作
+ */
+function doDelete(id) {
+    var timestamp = (new Date()).valueOf();
+    layer.confirm('您确认要删除吗？', {title: '删除'}, function () {
+        jqueryNoSignTag.ajax({
+            //cache : true,
+            type: "DELETE",
+            url: "/${table.tableNameOut.toLowerCase()}/doDelete/" + id,
+            dataType: "json",
+            error: function () {
+                alert("超时或系统异常");
+            },
+            success: function (data) {
+                if (data && data.code == 0) {
+                    jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh');
+                    layer.closeAll();
+                } else {
+                    alert("操作失败");
+                }
+            }
+        });
+    });
+}
+
+/**
+ * 启用修改
+ * @param id
+ */
+function lookArticle(id) {
+    var url = '/${table.tableNameOut.toLowerCase()}/toDetailPage/' + id;
+    layer.open({
+        type:2,
+        title:'解决方案详情',
+        content:[url,'yes'],
+        area:['1000px','700px'],
+    })
+
+}
+
+/**
+ * 格式化时间
+ */
+function dataFormatter(value, row, index) {
+    return formatDate(row.createTime, 'yyyy-MM-dd HH:mm:ss');
+}
+//一览界面序号
+function indexFormatter(value, row, index) {
+    var page = table.bootstrapTable("getPage");
+    return page.pageSize * (page.pageNumber - 1) + index + 1;
+}
+
+#if($canStopStart == "true")
+//启用、停用状态
+function updateEnabledOrDisable (id, enabled) {
+    
+    if (enabled == 1) {
+        title = "启用";
+        message = "您确定要启用吗?"
+    } else {
+        title = "停用";
+        message = "停用后该方案无法上架";
+    }
+    layer.confirm(message, {icon: 3, title: title,skin: 'pop-box'}, function () {
+        layer.closeAll();
+        jqueryNoSignTag.ajax({
+                type: "post",
+                url: "/${table.tableNameOut.toLowerCase()}/updateEnabled/" + id + "/" + enabled,
+                data: {enabled:enabled},
+                dataType: "json",
+                error: function (data) {
+                    alert("超时或系统异常");
+                },
+                success: function (data) {
+
+                    if (data && data.code == 0) {
+                        jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh');
+
+                    } else {
+                        layer.alert(data.desc, {icon: 5, title:'提示信息'});
+
+                    }
+                }
+            }
+        );
+    });
+}
+#end
+/**
+ * 推荐操作
+ */
+function changeIsRec(elm, status, id) {
+    var title = "";
+    var message = "";
+    var sortNums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var options = ""
+    jqueryNoSignTag.each(sortNums, function (i) {
+        options = options + " <option value='" + sortNums[i] + "'>" + sortNums[i] + "</option>"
+    })
+    var html = "请选择排序:<select id='sortNoRec' >" + options + " </select>"
+    var categoryname = $(elm).data("categoryname");
+    if (status == 1) {
+        title = "确定推荐";
+        message = "您确定要推荐吗？</br>" + html;
+    } else {
+        title = "取消推荐";
+        message = "您确定要取消推荐吗?";
+    }
+    layer.confirm(message, {icon: 3, title: title}, function () {
+        var sortNo = $("#sortNoRec").val();
+        if (typeof(sortNo) == "undefined") {
+            sortNo = 0;
+        }
+        layer.closeAll();
+        jqueryNoSignTag.ajax({
+                type: "POST",
+                url: "/${table.tableNameOut.toLowerCase()}/updateIsRec/" + id + "/" + status + "/" + sortNo,
+                dataType: "json",
+                error: function () {
+                    alert("超时或系统异常");
+                },
+                success: function (data) {
+                    if (data && data.code == 0) {
+                        jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh');
+                    } else {
+                        layer.alert(data.desc);
+                    }
+                }
+            }
+        );
+    });
+}
+function queryParams(params) {
+    return $("#searchForm").serialize() + "&order=" + params.order + "&offset=" + params.offset + "&limit=" + params.limit;
+}
+function query() {
+    jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh', {url: '/${table.tableNameOut.toLowerCase()}/queryPage'}, {query: $("#searchForm").serialize()});
+}
+
+
+$(function () {
+   jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable({
+        onLoadSuccess: function (data) {
+
+        }
+    });
+
+})
+
+
+function setEditTag(tagsPOList) {
+
+    var tagNames = "";
+    for (var i = 0; i < tagsPOList.length; i++) {
+        var tagName = tagsPOList[i].tagName
+        if (i == 0) {
+            tagNames = tagName;
+        } else {
+            tagNames = tagNames + ";" + tagName;
+        }
+        $("input[name=tagName][value=" + tagsPOList[i].id + "]").get(0).checked = true;
+    }
+
+    $("#tagNames").val(tagNames);
+}
+
+
+function setTagNams(obj) {
+    var $this = $(obj);
+    var falg = $this.is(":checked");
+    var $tagNames = $("#tagNames");
+    var tagNames = $tagNames.val();
+    if (falg) {
+        var tagName = $this.data("tagname");
+        if (tagNames == "") {
+            tagNames = tagName;
+        } else {
+            tagNames = tagNames + ";" + tagName;
+        }
+        $tagNames.val(tagNames);
+    } else {
+        var tagName = $this.data("tagname");
+        var regExp = new RegExp("(;|\\b)" + tagName + "(;|\\b)", 'gi');
+        tagNames = tagNames.replace(regExp, "");
+        $tagNames.val(tagNames);
+    }
+
+}
+
+
+function queryType(elm, caId) {
+    var $this = $(elm);
+    $this.css('font-weight', 'bold').siblings('.articalMain-tableHead').css('font-weight', 'normal');
+    $("#searchForm input[name=categoryId]").val(caId);
+    query();
+
+}
+
+/**
+ * 图片格式化
+ */
+#if($canUploadImage == "true")
+function imageFormatter(value) {
+	if (value == null || value == '' || value == undefined) {
+		return "<label style = 'text-align:center;'>-</label>"
+	}
+	var html = "<img src = '"+ imgViewAddress + "/" + value + "'/>";
+	return "<label style = 'text-align:center;'>"+ html +"</label>";
+}
+#end
+
+
+

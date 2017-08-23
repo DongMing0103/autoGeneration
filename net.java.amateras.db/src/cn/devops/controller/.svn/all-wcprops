@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/kzs_dev_tools/!svn/ver/50/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/controller
+END
+DevopsMainTableDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/kzs_dev_tools/!svn/ver/64/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/controller/DevopsMainTableDialog.java
+END
+GenCode4DbSubTableSelDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/controller/GenCode4DbSubTableSelDialog.java
+END
+QueryTableFieldSelDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/controller/QueryTableFieldSelDialog.java
+END
+DevopsLinkSubFiledDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/controller/DevopsLinkSubFiledDialog.java
+END
+DevopsTestSqlDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/controller/DevopsTestSqlDialog.java
+END

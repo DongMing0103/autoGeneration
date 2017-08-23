@@ -1,0 +1,15 @@
+
+$(function(){
+
+	#foreach($column in $valiTable.columns) 
+		var $column.columnNameOutLow = gg888("#$column.columnNameOutLow").val();
+		if($column.columnNameOutLow =='' || $column.columnNameOutLow ==null || $column.columnNameOutLow ==undefined){
+			layer.alert("$column.logicalName不能为空",{icon:2,title:'提示信息'});
+			return;
+		}
+		if($column.columnNameOutLow.length>20){
+			layer.alert("$column.logicalName不超过20个字",{icon:2,title:'提示信息'});
+			return;
+		}
+	#end
+});

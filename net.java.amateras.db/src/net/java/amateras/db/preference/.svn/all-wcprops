@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/preference
+END
+DictionaryPreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/preference/DictionaryPreferencePage.java
+END
+DBPreferenceInitializer.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/preference/DBPreferenceInitializer.java
+END
+ValidationPreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/preference/ValidationPreferencePage.java
+END
+ERDPreferencePage.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/preference/ERDPreferencePage.java
+END

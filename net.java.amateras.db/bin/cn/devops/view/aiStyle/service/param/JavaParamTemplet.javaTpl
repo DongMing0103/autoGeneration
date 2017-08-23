@@ -1,0 +1,55 @@
+package ${package}.service.param.${modelName};
+
+import java.util.*;
+import java.math.*;
+import ${package}.common.param.PageParam;
+
+public class ${table.tableNameOut}Param extends PageParam {
+		
+#foreach($column in $table.columns) 
+		#if($column.columnTypeName == "java.util.Date")
+			/**
+	          * $!column.logicalName
+	        */
+			private   String   $column.columnNameOutLow ;
+		#else
+			/**
+	          * $!column.logicalName
+	        */
+	    private   $column.columnTypeName   $column.columnNameOutLow ;
+		#end
+#end
+        
+#foreach($column in $table.columns) 
+		#if($column.columnTypeName == "java.util.Date")
+			/**
+	          * $!column.logicalName
+	        */
+	        public void set${column.columnNameOutUp}(String ${column.columnNameOutLow}){
+		      this.${column.columnNameOutLow}=${column.columnNameOutLow};    
+	        }
+	         
+		    /**
+	          * @return $!column.logicalName
+	        */
+	        public String get${column.columnNameOutUp}(  ){ 
+		      return this.${column.columnNameOutLow};    
+	        } 
+		#else
+			/**
+	          * $!column.logicalName
+	        */
+	        public void set${column.columnNameOutUp}(${column.columnTypeName} ${column.columnNameOutLow}){
+		      this.${column.columnNameOutLow}=${column.columnNameOutLow};    
+	        }
+	         
+		    /**
+	          * @return $!column.logicalName
+	        */
+	        public ${column.columnTypeName} get${column.columnNameOutUp}(  ){ 
+		      return this.${column.columnNameOutLow};    
+	        } 
+		#end
+        
+#end    
+}

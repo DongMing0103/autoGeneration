@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/kzs_dev_tools/!svn/ver/60/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/view/aiStyle/ManageTemplet
+END
+ManageEditPageTemplet.htmlTpl
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/kzs_dev_tools/!svn/ver/64/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/view/aiStyle/ManageTemplet/ManageEditPageTemplet.htmlTpl
+END
+ManageMainPageTemplet.htmlTpl
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/kzs_dev_tools/!svn/ver/60/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/view/aiStyle/ManageTemplet/ManageMainPageTemplet.htmlTpl
+END
+ManageAddPageTemplet.htmlTpl
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/kzs_dev_tools/!svn/ver/64/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/view/aiStyle/ManageTemplet/ManageAddPageTemplet.htmlTpl
+END
+ManageMainPageTemplet.jsTpl
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/view/aiStyle/ManageTemplet/ManageMainPageTemplet.jsTpl
+END
+ManageAddOrEditPageTemplet.jsTpl
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/kzs_dev_tools/!svn/ver/57/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/view/aiStyle/ManageTemplet/ManageAddOrEditPageTemplet.jsTpl
+END

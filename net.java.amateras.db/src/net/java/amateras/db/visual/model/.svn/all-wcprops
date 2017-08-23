@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model
+END
+DommainModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/DommainModel.java
+END
+ForeignKeyModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/ForeignKeyModel.java
+END
+TableModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/TableModel.java
+END
+AbstractDBConnectionModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/AbstractDBConnectionModel.java
+END
+ICloneableModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/ICloneableModel.java
+END
+AbstractDBModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/AbstractDBModel.java
+END
+IndexModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/IndexModel.java
+END
+NoteModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/NoteModel.java
+END
+RootModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/RootModel.java
+END
+AbstractDBEntityModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/AbstractDBEntityModel.java
+END
+AnchorModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/AnchorModel.java
+END
+ColumnModel.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/ColumnModel.java
+END
+ForeignKeyMapping.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/model/ForeignKeyMapping.java
+END

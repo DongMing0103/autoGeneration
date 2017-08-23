@@ -1,0 +1,160 @@
+<!-- mould${table.tableNameOut} -->
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	\#parse("./comm/static_new.html")
+	<script type="text/javascript" src="gg888{static}/static/js/${MainTableAs}/mould${table.tableNameOut}.js"></script>
+	<title>模板2</title>
+	<style type="text/css">
+		.fixed-table-container tbody {
+			border: none;
+		}
+		
+		.operaBtn{
+			padding: 0 5px;
+			color: #08c;
+			text-decoration: underline;
+			margin-right: 5px;
+		}
+		.nameChange{ 
+			padding-top: 0pz !important;
+			height: 32px; 
+			line-height: 32px;
+		}
+		.textChange{ 
+			height: 32px;
+			width: 250px !important;
+		}
+		.inputChange{
+			width: inherit; 
+			box-sizing: border-box;
+		}
+		#outboxTable>tbody td{ text-align: center;}
+		.main-box{
+			margin: 0 auto;
+			padding: 30px 0px;
+			width: 1197px;
+		}
+		.left-nav{
+			width: 218px;
+			min-height:467px;
+			float: left;
+			position: static;
+		}
+		.inbox-content{
+			width: 940px;
+			float: right;
+		}
+		.fixed-table-toolbar{
+			display: none;
+		}
+	</style>
+</head>
+<body>
+\#parse("./comm/top_new.html")
+<script type="text/javascript" src="gg888{static}/static/js/common/categoryCascade.js"></script>
+
+<div class="main-box clearfix">
+	\#parse("./comm/left_nav.html")
+	
+	<div class="right-main">
+	<div class="bread-div">联系信息&gt;<span class="nav-active">模板2</span></div>
+		<div class="inboxHead">
+			<form id="searchForm" class="form-inline data-form-inline" role="form">
+				#foreach($column in $qryTable.columns)
+					<div class="form-group">
+						<label>$column.logicalName</label>
+						<input type="text" name="$column.columnNameOutLow" class="form-control"/>
+					</div>
+				#end
+				<div class="form-group">
+					<label>状态</label>
+					<select name="status" class="form-control">
+						<option value="">全部</option>
+						<option value="1">暂存</option>
+						<option value="2">下架</option>
+						<option value="3">待上架</option>
+						<option value="4">上架</option>
+						<option value="5">停用</option>
+					</select>
+				</div>
+				<hr>
+				<div class="form-group minselect" style="margin-bottom: 0px">
+				<label>分类</label>
+					<select name="firstCategoryId" id="firstCategoryId" class="form-control">
+						<option value="">全部</option>
+					</select>
+					<select class="form-control" name="secondCategoryId" id="secondCategoryId">
+						<option value="">全部</option>
+					</select>
+				</div>
+				
+				<button type="button" class="btn btn-blue-b-filling search" onclick="query()" style="width: 100px">查询</button>
+			</form>
+		</div>
+		<div class="addDelete">
+			<span class="btn btn-blue-b-filling" onclick="delBox()">删除</span>
+		</div>
+	<!-- list -->
+		<div class="receiveBoxContent">
+			<table data-classes="article-table"
+			 data-toggle="table" 
+			 data-url="/${table.tableNameOut.toLowerCase()}/queryPage"
+			 data-pagination="true" 
+			 data-query-params="queryParams" 
+			 data-side-pagination="server" 
+			 id="${table.tableNameOut}Table"
+			 data-cache="false"
+			 data-page-list="[5,10,20,30,all]"
+			 data-show-pagination-switch=true>
+				<thead>
+					<tr data-formatterfirtr="firsrformatterTr" style="background-color:#f2f2f2; border-left:1px solid #ccc; border-right: 1px solid #ccc">
+						<th data-checkbox="true"></th>
+						#foreach($column in $table.columns)
+						<th data-field="$column.columnNameOutLow">$column.logicalName</th>
+						#end
+						<th data-field="status" data-formatter="statusFormatter">状态</th>
+						<th data-field="createTime" data-formatter="dataFormatter">修改时间<span onclick="queryTimeOrd(this)" data-ordertime="desc">▼</span></th>
+						<th data-field="enabled" data-formatter="buttonFormatter">操作</th>
+					</tr>
+					<tr>
+						<th colspan="6"></th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</div>
+\#parse("./comm/footer_new.html")
+<script>
+	jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable({
+		onLoadSuccess:function (data) { //页面显示数据总条数
+			jqueryHadTag"#GGGGGG${table.tableNameOut}Table thead tr").eq(1).css({"height":"20px","background-color":"#fff"});
+			jqueryHadTag"#GGGGGG${table.tableNameOut}Table thead tr").eq(1).find("th").css("border-bottom","none");
+			jqueryHadTag"#GGGGGG${table.tableNameOut}Table tr:first th:tirst").css("border-left","1px solid #ddd");
+			jqueryHadTag"#GGGGGG${table.tableNameOut}Table tr:first th:last").css("border-right","1px solid #ddd");
+			jqueryHadTag"#GGGGGG${table.tableNameOut}Table tr:first th").css("border-bottom","1px solid #ddd")
+		}
+	});
+
+	var flag = "$!flag";
+	$(function () {
+		var category = new Category({defalutName: "全部", status: ""});
+		category.execute();
+		
+		//一级 ——> 二级分类联动
+		var category = new Category({'level': 2, 'id': "secondCategoryId", defalutName: "全部", status: ""});
+		category.execute();
+		tablerefresh();
+		function tablerefresh() {
+			var date = new Date();
+			var t = "#" + date.getTime()
+			jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh', {url:"/${table.tableNameOut.toLowerCase()}/queryPage"}, {query: $("#searchForm").serialize()  +  "&t=" +t});
+			
+		}
+	})
+</script>
+</body>
+</html>

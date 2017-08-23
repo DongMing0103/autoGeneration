@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${table.tableNameOut}POMapper">
+
+    <!-- $!table.logicalName  表中列对应PO -->
+    <resultMap type="$!{entity}.${modelName}.${table.tableNameOut}PO" id="BaseResultMap">
+        #foreach($column in $table.columns)
+            <result column="$column.columnName.toUpperCase()" property="$column.columnNameOutLow"/>
+            <!-- <result column="$column.columnName.toUpperCase()" property="$column.columnNameOutLow" jdbcType="$column.columnType4DB"/> -->
+        #end
+    </resultMap>
+
+    <!-- 显示的记录对应的列-->
+    <sql id="Base_Column_List">
+        #foreach($column in $table.columns)
+	        #if($velocityCount == $columnSize)
+	           $column.sqlAsColumn as $column.columnNameOutLow
+	        #else
+	           $column.sqlAsColumn as $column.columnNameOutLow,
+	        #end
+        #end
+    </sql>
+    <!-- 无分页查询 -->
+    <select id="queryList" parameterType="${frameWorkPath}.util.ParamMap" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM <include refid="querySqlMain"/>
+        where del_flag=1
+        <include refid="queryOptions"/>
+       	<include refid="orderControl"/>
+    </select>
+    
+    <!-- 列表对应的查询条件组合  -->
+    <sql id="queryOptions">
+        #foreach($column in $table.columns)
+         #if($column.showDatatype ==  0)
+            <if test="$column.columnNameOut != null and $column.columnNameOut != ''"> AND $column.sqlAsColumn = #{$column.columnNameOutLow}</if>
+         #end
+         #if($column.showDatatype ==  1)
+            <if test="$column.columnNameOut != null and $column.columnNameOut != ''"> AND $column.sqlAsColumn = #{$column.columnNameOutLow}</if>
+         #end
+        #end
+    </sql>
+
+    <!-- 列表查询对应的排序选项  -->
+    <sql id="orderControl">
+        <if test="orders != null">
+        	<foreach collection="orders.keys" index="key" item="value" open="order by" separator=",">
+        		$!orderOut
+        	</foreach>
+        </if>
+    </sql>
+
+
+    <!-- 列表查询对应的表关系SQL  -->
+    <sql id="querySqlMain">
+        $table.allTableNameAs
+    </sql>
+
+
+    <!-- 分页查询对应的记录 -->
+    <select id="queryPage" resultMap="BaseResultMap" parameterType="${frameWorkPath}.util.ParamMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM <include refid="querySqlMain"/>
+        <where>
+        	<if test="@Ognl@isNotEmpty(delFlag)">and del_flag = #{ delFlag }</if>
+        </where>
+        <include refid="queryOptions"/>
+        <include refid="orderControl"/>
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="findById" resultMap="BaseResultMap" parameterType="${frameWorkPath}.util.ParamMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM <include refid="querySqlMain"/>
+        <where>
+        	<if test="@Ognl@isNotEmpty(delFlag)">and del_flag = #{ delFlag }</if>
+        </where>
+        <include refid="queryOptions"/>
+        <include refid="orderControl"/>
+    </select>
+
+
+	#if($canAddSql == "true")
+    <!-- 新增记录 ${table.tableNameOut.toLowerCase()} -->
+    <insert id="insert${table.tableNameOut}" parameterType="${entity}.${modelName}.${table.tableNameOut}PO">
+        INSERT INTO $table.tableName (
+        #foreach($column in $table.columnsMain)
+            #if($column.pKField == 1)
+            #else
+                #if($velocityCount ==  $columnSize)
+                    $column.columnName
+                #else
+                    $column.columnName,
+                #end
+            #end
+        #end
+         ) VALUES(
+         #foreach($column in $table.columnsMain)
+            #if($column.pKField == 1)
+            #else
+                #if($velocityCount ==  $columnSize)
+                    #{${table.tableNameOutLow}.${column.columnNameOutLow},jdbcType=${column.columnType4DB}}
+                #else
+                    #{${table.tableNameOutLow}.${column.columnNameOutLow},jdbcType=${column.columnType4DB}},
+                #end
+            #end
+        #end
+        )
+    </insert>
+	#end
+
+	#if($canUpdateSql == "true")
+    <!-- 更新记录 -->
+    <update id="update${table.tableNameOut}" parameterType="${entity}.${modelName}.${table.tableNameOut}PO">
+        UPDATE $table.tableName
+        <set>
+            #foreach($column in $table.columnsMain)
+                #if($column.pKField == 1)
+                #else
+                    <if test="${table.tableNameOutLow}.$column.columnNameOut!=null"> ${column.columnName}=#{${table.tableNameOutLow}.${column.columnNameOutLow},jdbcType=${column.columnType4DB}},</if>
+                #end
+            #end
+        </set>
+        WHERE ID = #{${table.tableNameOutLow}.id}
+    </update>
+	#end
+
+	#if($canDeleteSql == "true")	
+    <!-- 删除记录 -->
+    <delete id="deleteById" parameterType="${frameWorkPath}.util.ParamMap">
+    	update $table.tableName set del_flag=0 where id = $!idOut
+    </delete>
+    
+    
+    <delete id="delete${table.tableNameOut}">
+        DELETE FROM $table.tableName
+        WHERE ID in
+        <foreach collection="ids" item="id" open="(" separator="," close=")" >
+            $!idOut
+        </foreach>
+    </delete>
+	#end
+	
+	
+	#if($canChangeSql == "true")
+    <!-- 以下是自定义的配置信息 -->
+    <!-- 批量改变状态 -->
+    <update id="batChange${table.tableNameOut}Status">
+        UPDATE $table.tableName SET status = #{changeVal}
+        WHERE ID in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            $!idOut
+        </foreach>
+    </update>
+    #end
+</mapper>
+
+
+

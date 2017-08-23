@@ -1,0 +1,446 @@
+<!-- mainXXXXXX{table.tableNameOut} -->
+
+<div class="m-content">
+    <div class="content-cap">
+        <span class="cap-name">单位列表</span>
+        <div class="pull-right"> 
+            <a class="btn btn-warning" href="javascript:void(0);" onclick="editData('新增单位','XXXXXX!rc.contextPath/${table.tableNameOut.toLowerCase()}/add${table.tableNameOut}','800px','90%')">
+                <span class="glyphicon glyphicon-plus"></span> 新增
+            </a>
+        </div>
+    </div>
+    <div class="form-box">
+	    <form class="form-inline mb10" id="form" role="form">
+	    	
+	    	#if ($Time == "true")
+	    	<div class="form-group ml15">
+				<input class="Wdate input-date" id="d4311" name="stratTimes" type="text" placeholder="请选择日期" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'d4312\')||\'2020-10-01\'}'})"> 
+				&nbsp;至&nbsp;
+				<input class="Wdate input-date" id="d4312" name="endTimes" type="text" placeholder="请选择日期" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'d4311\')}',maxDate:'2020-10-01'})">
+				<input type="hidden" value=2 name="leixing"/>
+			</div>
+			#end
+			
+	        #if($Map == "true")
+	        <div class="form-group">
+	            <label class="control-label">地理信息</label>
+	            <div class="city-select" id="city">
+		            <div class="has-feedback" style="display: inline-block;">
+		                <select class="form-control prov"><option value="">请选择</option><option value="86011">北京市</option><option value="86012">天津市</option><option value="86013">河北省</option><option value="86014">山西省</option><option value="86015">内蒙古自治区</option><option value="86021">辽宁省</option><option value="86022">吉林省</option><option value="86023">黑龙江省</option><option value="86031">上海市</option><option value="86032">江苏省</option><option value="86033">浙江省</option><option value="86034">安徽省</option><option value="86035">福建省</option><option value="86036">江西省</option><option value="86037">山东省</option><option value="86041">河南省</option><option value="86042">湖北省</option><option value="86043">湖南省</option><option value="86044">广东省</option><option value="86045">广西壮族自治区</option><option value="86046">海南省</option><option value="86050">重庆市</option><option value="86051">四川省</option><option value="86052">贵州省</option><option value="86053">云南省</option><option value="86054">西藏自治区</option><option value="86061">陕西省</option><option value="86062">甘肃省</option><option value="86063">青海省</option><option value="86064">宁夏回族自治区</option><option value="86065">新疆维吾尔自治区</option><option value="86071">台湾省</option><option value="86081">香港特别行政区</option><option value="86082">澳门特别行政区</option></select>
+		                <i class="fa fa-sort-down form-control-feedback triangle-fa"></i>
+		            </div>
+		            <div class="has-feedback" style="display: inline-block;">
+		                <select class="form-control city" disabled="disabled" style="display: none;"></select>
+		                <i class="fa fa-sort-down form-control-feedback triangle-fa" style="display: none;"></i>
+		            </div>
+		            <div class="has-feedback" style="display: inline-block;">
+		                <select class="form-control dist" disabled="disabled" style="display: none;"></select>
+		                <i class="fa fa-sort-down form-control-feedback triangle-fa" style="display: none;"></i>
+		            </div>
+		        </div> 
+	        </div>  
+	  		#end
+	  		
+	  		#if($canCategory == "true")
+			<div class="form-group has-feedback ml15">
+				<label class="control-label">分类</label> 
+				<select class="form-control" name="categoryIdOne" onchange="getCategoryIdTwo(this.value)">
+					<option value="">一级分类</option> #if($!systemFoodCategoryPOs)
+						#foreach($!systemFoodCategoryPO in $!systemFoodCategoryPOs)
+						<option value="$!systemFoodCategoryPO.id">$!systemFoodCategoryPO.categoryName</option>
+						#end #end
+				</select> 
+			</div>
+			<div class="form-group has-feedback ml15">
+				<select class="form-control" name="categoryIdTwo" id="categoryIdTwo">
+					<option value="">二级分类</option>
+				</select> 
+			</div>
+			#end
+	  		
+	        <div class="form-group">
+				<label class="control-label">状态</label>
+					<div class="has-feedback" style="display: inline-block;">
+						<select class="form-control" name="status">
+							<option value="">请选择</option>
+							<option value="1">未审核</option>
+							<option value="2">已审核</option>
+							<option value="0">已注销</option>
+						</select> <i class="fa fa-sort-down form-control-feedback triangle-fa"></i>
+					</div>
+			</div>
+			
+	        <div class="form-group">
+				<div class="has-feedback" style="display: inline-block;">
+					<select class="form-control" name="selectNum">
+						<option value="0">请选择搜索条件</option>
+						<option value="1">客户名称</option>
+						<option value="2">客户编号</option>
+					</select> <i class="fa fa-sort-down form-control-feedback triangle-fa"></i>
+				</div>
+				<input class="form-control" placeholder="请输入..." name="condition"
+					id="condition">
+			</div>
+		    <div class="form-group">
+	       		<a class="btn btn-default" href="javascript:void(0);" onclick="searchClick()"><span class="glyphicon glyphicon-search"></span>搜索</a>
+	        	<a class="btn btn-default" href="javascript:void(0);" onclick="loadHtmlDiv('XXXXXX!rc.contextPath/${table.tableNameOut.toLowerCase()}/init')">重置</a>
+	        </div>
+	    </form>
+	</div>
+     <table
+        id="table"
+        data-classes="table table-bill" 
+        data-toggle="table"
+        data-url="XXXXXX!rc.contextPath/${table.tableNameOut.toLowerCase()}/queryPage"
+        data-pagination="true"
+        data-pagination-v-align="both"
+        data-side-pagination="server"
+        data-cache="false"
+        data-query-params="queryParams"
+        data-page-size="20"
+        data-page-list="[10,20,50]"> 
+    
+		<thead>
+		   
+			<tr>
+				<th data-checkbox="true">序号</th>
+				
+				#foreach($column in $table.columns)
+				<th data-align="center" data-field="$column.columnNameOutLow">$column.logicalName</th>
+				#end
+				
+				#if($canUpDown == "true")
+				<th data-align="center" data-field="status" data-formatter="statusFormatter">状态</th>
+				#end
+				
+				#if($canUploadImage == "true")
+				<th data-field="imageUrl" class="th-center" data-formatter="imageFormatter">图片</th>
+				#end
+				<th data-align="center" data-field="createTime" data-formatter="dateFormatter">创建时间
+				<span onclick="queryTimeOrd(this)" data-ordertime="desc">▼</span></th>
+				<th data-align="center" data-field="enabled" data-formatter="operateFormatter">操作</th> 
+			 
+			</tr>
+		</thead>
+	</table>	
+     
+    <div class="mt10">
+	    <a class="btn btn-warning batch-audit" href="javascript:void(0);">批量审核</a>
+	    <a class="btn btn-warning batch-cancel" href="javascript:void(0);">注销服务</a>
+	    <a class="btn btn-warning" onclick="downloadData('请选择要导出的数据!','$!contextPath/${table.tableNameOut.toLowerCase()}/excelOut?ids=')">
+	        <span class="glyphicon glyphicon-save"></span>导出
+	    </a>
+	    <a class="btn btn-warning data-statistics" href="javascript:void(0);">数据统计</a>
+    </div>
+    
+</div>	
+
+<script src="XXXXXX!rc.contextPath/static/js/cityselect/jquery.cityselect.js"></script>
+<script type="text/javascript">
+  
+
+    $(function(){
+        $('#table').bootstrapTable();
+    });
+    //状态格式
+    function statusFormatter(value,row,index){
+    	if(row.delFlag==0){
+    		value=0;
+    	}
+    	switch(value){
+     	case 1:return "未审核";
+     	case 2:return "已审核";
+     	case 0:return "<span class=cancellation>已注销</span>";
+     	default:return "未定义";
+    	}
+    }
+        
+    //操作 格式
+    function operateFormatter(value, row, index) {
+        // 状态：已审核
+		var str1="<div class=tddiv>"+
+           	"<span class=settingtda>请选择</span>"+
+           	"<ul class=settingtdmenu>"+
+               "<li><a class=look href=$!rc.contextPath/${table.tableNameOut.toLowerCase()}/viewInfo?id="+row.id+" target=_blank>查看</a></li>";
+               
+       	var str2="<li><a href=${table.tableNameOut.toLowerCase()}/edit${table.tableNameOut}?id="+row.id+"  target=_blank>编辑</a></li>"+
+               "<li><a href=${table.tableNameOut.toLowerCase()}/init?id="+row.id+" target=_blank>合作商家</a></li>"+
+           	"</ul>"+
+       "</div>";
+       if(row.delFlag==0){
+    	   row.status=0;
+       }
+       switch(row.status){
+        	case 1:return str1
+        	+"<li><a class=edit href=javascript:void(0); onclick=editData('编辑','$!rc.contextPath/enterpriceSystem/addUnitSystemPage?id="+row.id+"','800px','90%')>编辑</a></li>"
+        	+"<li><a href=javascript:void(0); class=cancel-service onclick=statusClickS("+row.id+")>审核</a></li>"+str2;
+   			case 2:return str1
+   			+"<li><a class=reset-password href=javascript:void(0); onclick=resetPassword() data="+row.id+">重置密码</a></li>"
+   			+"<li><a class=edit href=javascript:void(0); onclick=editData('编辑','$!rc.contextPath/enterpriceSystem/addUnitSystemPage?id="+row.id+"','800px','90%')>编辑</a></li>"
+   			+"<li><a href=javascript:void(0); class=cancel-service onclick=statusClickZ("+row.id+")>注销</a></li>"+str2;
+   			default: return str1+str2;
+       }
+    }
+
+		//前条件搜索
+        function searchForm(){
+			var opt={
+				url: '$!rc.contextPath/enterpriceSystem/listData',
+				silent:true,
+				query:{
+        			eStyle:$("#eStyle").val(),
+        			status:$("#status").val(),
+        			areaCode:$(".dist").val()
+        		}
+			}
+        	$('#table').bootstrapTable('refresh',opt);
+        }
+		//根据编号或者名称查询
+		function searchClick(){
+			$('#table').bootstrapTable('refresh');
+		}
+		
+		// 分页查询
+		function queryParams(params){
+			return $('#form').serialize() + '&order=' + params.order
+				+ '&offset=' + params.offset + '&limit=' + params.limit;
+		}
+        // 重置密码
+        function resetPassword(){
+        	var id = $(".reset-password").attr("data");
+        	layer.confirm('确定要重置密码吗？', {icon: 3, title:'重置密码'}, function(index){
+        		jQuery.ajax({
+            		url:"$!rc.contextPath/enterpriceSystem/resetPassword",
+            		type:"post",
+            		data:{id:id},
+            		dataType:"json",
+            		error:function(data){
+            			layer.alert("数据异常");
+            		},
+            		success:function(data){
+            			if(data.statusCode==200){
+            				layer.msg("重置成功");
+            			}
+            		}
+            	})
+                layer.close(index);
+            });
+        }
+        
+       	 /* 编辑 */
+        function editData(title,url,width,height){
+    		layer.open({
+    		      type:2,
+    		      title:title,
+    		      shadeClose:true,
+    		      shade:true,
+    		      area:[width, height],
+    		      content:url
+    		});
+    	}
+        
+        // 审核
+        function statusClickS(id){
+            layer.confirm('确定通过该单位的入驻申请吗？', {icon: 2, title:'审核'}, function(index){
+            	jQuery.ajax({
+            		url:"$!rc.contextPath/enterpriceSystem/udpateStatus",
+            		data:{ids:id,type:1},
+            		dataType:"json",
+            		type:"post",
+            		success:function(data){
+            			
+            			if(data.statusCode!=200){
+            				layer.msg(data.message);
+            			}
+            			$('#table').bootstrapTable('refresh');
+            			layer.close(index);
+            		}
+            	})
+            });
+        };
+        // 注销
+        function statusClickZ(id){
+            layer.confirm('确定要注销该单位的服务权限吗？', {icon: 2, title:'注销服务'}, function(index){
+            	jQuery.ajax({
+            		url:"$!rc.contextPath/enterpriceSystem/udpateStatus",
+            		type:"post",
+            		data:{ids:id},
+            		success:function(data){
+            			if(data.statusCode!=200){
+            				layer.msg(data.message);
+            			}
+            			layer.close(index);
+            			$('#table').bootstrapTable('refresh');		
+            		}
+            	})
+            });
+        };
+
+        
+        
+        // 批量审核
+        $('.batch-audit').click(function(){
+        	var idsArry = $("#table").bootstrapTable('getSelections');
+        	if(idsArry.length==0){
+        		return layer.alert('请选择审核的数据！', {icon: 2,skin: 'layer-ext-moon',title:"警告"});
+        	}
+        	var ids="";
+        	jQuery.each(idsArry,function(i){
+        		ids+=idsArry[i].id+",";
+        	});
+            layer.confirm('确定通过这些单位的入驻申请吗？', {icon: 3, title:'审核'}, function(index){
+                jQuery.ajax({
+            		url:"$!rc.contextPath/enterpriceSystem/udpateStatus",
+            		data:{ids:ids,type:1},
+            		type:"post",
+            		dataType:"json",
+            		success:function(data){
+            			if(data.statusCode!=200){
+            				layer.msg(data.message);
+            			}
+		                $('#table').bootstrapTable('refresh');  
+		                layer.close(index);
+            		}
+            	})
+            });
+        });
+
+        // 注销服务
+        $('.batch-cancel').click(function(){
+        	var idsArry = $("#table").bootstrapTable('getSelections');
+        	if(idsArry.length==0){
+        		return layer.alert('请选择要注销的数据！', {icon: 2,skin: 'layer-ext-moon',title:"警告"});
+        	}
+        	var ids="";
+        	jQuery.each(idsArry,function(i){
+        		ids+=idsArry[i].id+",";
+        	});
+            layer.confirm('确定要注销这些单位的服务权限吗？', {icon: 3, title:'注销服务'}, function(index){
+            	 jQuery.ajax({
+             		url:"$!rc.contextPath/enterpriceSystem/udpateStatus",
+             		data:{ids:ids},
+             		type:"post",
+             		dataType:"json",
+             		success:function(data){
+             			if(data.statusCode!=200){
+            				layer.msg(data.message);
+            			}
+             			layer.close(index);
+ 		                $('#table').bootstrapTable('refresh');  
+             		}
+             	})
+            });
+        });
+
+        // 数据统计
+        $('.data-statistics').click(function(){
+        	
+            layer.open({
+                type: 1,
+                title:'数据统计',
+                btn:['确定','取消'],
+                area: ['370px', '200px'], 
+                success:function(){
+                	jQuery.ajax({
+                		url:"$!rc.contextPath/enterpriceSystem/enterpriceCount",
+                		type:"post",
+                		dataType:"json",
+                		success:function(data){
+                			if(data!=null && data.length>0){
+                				for(var i=0;i<data.length;i++){
+                					if(data[i].status==1){
+                					 	$("#wsh").text(data[i].count);
+                					}else if(data[i].status==2){
+                					 	$("#ysh").text(data[i].count);
+                					}else if(data[i].status==3){
+                					 	$("#yzx").text(data[i].count);
+                					}
+                				}	
+                			}
+                			
+                		}
+                	})
+                },
+                content:'<div class="data-alert">'+
+                            '<div class="result-show">未审核:<span class="show-number" id="wsh">0</span></div>'+
+                            '<div class="result-show">已审核:<span class="show-number" id="ysh">0</span></div>'+
+                            '<div class="result-show">已注销:<span class="show-number" id="yzx">0</span></div>'+
+                        '</div>'
+            });
+        });
+        
+        #if($Map == "true")
+        //地理信息 
+        $('#city').citySelect({
+            url:"static/js/cityselect/city.min.js",
+            //url:"$!rc.contextPath/areaController/getCityAll",
+            prov:"", //省
+            city:"", //市	
+            dist:"", //区
+            nodata:"none", //当子集无数据时，隐藏select
+            required:false
+        }); 
+        #end
+        
+        //添加单位
+        function addUnitSystemPage(id){
+        	jQuery.ajax({
+        		type:"POST",
+        		data:{id:id},
+        		dataType:"json",
+        		url:"$!rc.contextPath/enterpriceSystem/addUnitSystemPage",
+        		success:function(data){
+        		}
+        	})
+
+        }
+        
+        #if($Excel == "true")
+    	/* 导出excel */
+	    function method1() {
+	     	var idsElm = $("#table").bootstrapTable('getSelections');
+   	    	if(idsElm.length==0){
+   	    		return layer.alert('请选择要导出的数据！', {icon: 2,skin: 'layer-ext-moon',title:"警告"});
+   	    	}
+   	    	var id = "";
+   	    	//是否为上架状态
+   	    	jQuery.each(idsElm,function(i){
+   	    		id = id+idsElm[i].id+",";
+   	    	})
+   	    	id = id.replace(/^,|,$/g,"");
+   	    	location.href="$!rc.contextPath/enterpriceSystem/excelOut?enterids="+id;
+	    }
+	    #end
+	    
+	    #if($canCategory == "true")
+		function getCategoryIdTwo(id) {
+			$("#categoryIdTwo").empty();
+			if (id == "") {
+				$("#categoryIdTwo").append("<option value=''>二级分类</option>");
+				return;
+			}
+			XXXXXX.ajax({
+				url : "XXXXXX!rc.contextPath/${table.tableNameOut.toLowerCase()}/queryPage",
+				dataType : "json",
+				data : {
+					categoryParent : id
+				},
+				type : "post",
+				cache : false,
+				success : function(data) {
+					if (data.length > 0) {
+						$("#categoryIdTwo").append("<option value=''>二级分类</option>");
+						XXXXXX.each(data, function(index, item) {
+							$("#categoryIdTwo").append("<option value='"+item.id+"'>" + item.categoryName + "</option>");
+						})
+					}
+				}
+			})
+		}
+		#end
+    </script>
+
+
+ 
+</body>
+</html>

@@ -1,0 +1,64 @@
+/**
+ * 公共变量及地址
+ */
+/***/
+var tableid='${table.tableNameOut}Table';
+var bsMainTable = $('#'+tableid);
+
+
+/**是否推荐*/
+var title = "";
+var message = "";
+var sortNums = [0,1,2,3,4,5,6,7,8,9];
+var option = "";
+
+/**
+获取时间戳
+**/
+function getTimeCondtion(){
+	var timestamp = "&tCondtion=";
+	var date = new Date();
+	timestamp += date.getTime();
+	return timestamp;
+}
+
+/**
+排序
+**/
+function queryTimeOrd(obj){
+	var gg888this = $(obj);
+	var orderTime = gg888this.data("ordertime");
+	if(orderTime == "desc"){
+		gg888this.html("▲");
+		gg888this.data("ordertime","asc");
+		$("input[name=ordertime]").val("asc");
+	}else{
+		gg888this.html("▼");
+		gg888this.data("ordertime","desc");
+		$("input[name=ordertime]").val("desc");
+	}
+	query();
+}
+
+/**
+日期格式化
+**/
+function dataFormatter(value,row,index){
+	return formatDate(row.createTime,'yyyy-MM-dd HH:mm:ss');
+}
+
+/**
+序号格式化
+**/
+function indexFormatter(value,row,index){
+	var page = table.bootstrapTable("getPage");
+	return page.pageSize*(page.pageNumber - 1) + index +1;
+}
+
+/**
+关闭当前窗口
+**/
+function closeThis(){
+	parent.location.reload(true);
+	parent.layer.closeAll();
+}

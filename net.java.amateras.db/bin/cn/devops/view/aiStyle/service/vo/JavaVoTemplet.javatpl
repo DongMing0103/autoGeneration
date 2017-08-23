@@ -1,0 +1,11 @@
+package ${package}.service.vo.${modelName};
+
+import ${package}.dao.entity.${modelName}.${table.tableNameOut}PO;
+import java.math.*;
+import java.util.List;
+import ${frameWorkPath}.aop.*;
+
+public class ${table.tableNameOut}VO extends ${table.tableNameOut}PO {
+
+	
+}

@@ -1,0 +1,96 @@
+package ${basePackage}.${modelName};
+
+import java.util.*;
+import ${frameWorkPath}.plugin.Page;
+import ${frameWorkPath}.service.BaseService;
+import ${package}.common.exceptions.*;
+import ${frameWorkPath}.util.ParamMap;
+import ${package}.common.enums.DatabaseTableNameEnum;
+import ${package}.common.enums.DeleteFlagEnum;
+import ${package}.common.util.BeanConvertor;
+import ${package}.common.util.CollectionsUtil;
+import ${package}.common.util.CommUtil;
+
+import ${package}.dao.entity.${modelName}.${table.tableNameOut}PO;
+import ${package}.service.vo.${modelName}.${table.tableNameOut}VO;
+import ${package}.service.param.${modelName}.${table.tableNameOut}Param;
+import ${package}.service.param.business.CrmBusinessTailRecordParam;
+
+import ${package}.service.vo.${modelName}.${table.tableNameOut}VO;
+import ${package}.service.vo.business.CrmBusinessTailRecordVO;
+import ${package}.dao.entity.canteen.CrmCanteenBaseInfoPO;
+
+public interface I${table.tableNameOut}Service extends BaseService {
+    
+    #if($canCategory == "true")
+     
+    public Page<${table.tableNameOut}PO> findCateAndStop(${table.tableNameOut}Param param);
+    #end
+    
+    public Page<${table.tableNameOut}VO> queryPage(${table.tableNameOut}Param param); 
+    
+    #if($canStopStart == "true")
+    
+    public void updateEnabled(Long id,Short enabled) throws BizException;
+    #end
+    
+    #if($canUpDown == "true")
+    
+    public void updateStatus(Long id,Short status) throws BizException;
+    #end
+    
+    /**
+     * 根据主键查询详情
+     */
+    public List<${table.tableNameOut}PO> listByParam(${table.tableNameOut}Param ${table.tableNameOut.toLowerCase()}Param);
+    
+    /**
+     * 根据id删除
+     */
+    public void deleteById(Long id)throws BizException;
+    
+    #if($canDeleteSql == "true")
+    /**
+     * 批量删除
+     */
+    public void deleteByIds(String id)throws BizException;
+    #end
+    
+    /**add*/
+    public void add(${table.tableNameOut}Param param);
+    
+    /**
+     *add
+     */
+    public void saveEntity(${table.tableNameOut}PO param);
+    
+    /**
+     *update
+     */
+    public void updateEntity(${table.tableNameOut}PO param);
+    
+    /**
+     * 根据id查询
+     */
+    public ${table.tableNameOut}PO findById(Long id);
+    
+    #if($Excel == "true")
+    /**
+     * 导出查询
+     */
+    public Page<${table.tableNameOut}VO> findPageSelect(${table.tableNameOut}Param param);
+    #end
+    
+    #if($Trace == "true")
+    /**
+     * 跟踪记录查询
+     */
+    public Page<${table.tableNameOut}VO> queryList(${table.tableNameOut}Param param);
+    #end
+    
+    /**
+     * 根据canteentId查询对象
+     */
+    public CrmCanteenBaseInfoPO findByCanteenId (Long canteenId);
+    
+}

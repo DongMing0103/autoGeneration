@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<!-- mainAdd${table.tableNameOut}") -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>新增</title>
+        
+        <link rel="stylesheet"
+			href="XXXXXX!rc.contextPath/static/css/font-awesome/font-awesome.min.css">
+		<link rel="stylesheet" href="/static/css/bootstrap/bootstrap.css">
+		<link rel="stylesheet" href="/static/css/bootstrap/bootstrap-table.css">
+		<link rel="stylesheet" href="/static/css/common.css">
+		<link rel="stylesheet" href="/static/css/style.css">
+		<link rel="stylesheet" href="/static/css/style2.css">
+		<script src="XXXXXX!rc.contextPath/static/js/jquery/jquery-1.11.1.min.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/bootstrap/bootstrap.min.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/bootstrap/bootstrap-table.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/bootstrap/bootstrap-table-zh-CN.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/layer/layer.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/cityselect/jquery.cityselect.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/DatePicker/WdatePicker.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/common.js"></script>
+
+        #if($canUploadImage == "true")
+		<link rel="stylesheet" href="$!rc.contextPath/static/css/fileinput.css">
+		<link rel="stylesheet" href="$!rc.contextPath/static/css/jquery.Jcrop.min.css">
+		<link rel="stylesheet" href="$!rc.contextPath/static/css/scojs.css">
+		<link rel="stylesheet" href="$!rc.contextPath/static/css/sco.message.css">
+        
+        <style type="text/css">
+			.imgsbox1{
+				width: 200px;
+				height: 200px;
+			}
+			.img-box1 {
+				position: relative;
+				width: 210px;
+				height: 210px;
+				border: 5px solid #ddd;
+			}
+		</style>
+		#end
+    </head>
+
+    <body>
+        <div id="_blankpage" style="min-height: 1100px;">
+            <!--
+            <div id="header">
+                <h2><a href="../index.html">筷子说管理后台</a></h2>
+                <h3>新增</h3>
+            </div>
+            -->
+            <div class="m-content">
+                <div class="form_cap mt30">
+                    <div class="dottad_line"></div>
+                    <span class="basic_info">基本信息</span>
+                </div>
+	                <form class="form-horizontal mt30" id="from">
+	                	<input type="hidden" name="id" id="id" value="gg888!po.id"/>
+	                    
+	                    #if($canCategory == "true")
+	                    <!-- 分类 -->
+						<div class="form-group">
+							<div class="col-sm-2 col-lg-1 col-sm-offset-2 col-lg-offset-3">
+								<label class="control-label">分类</label>
+							</div>
+							<div class="col-sm-3 has-feedback" style="padding-top: 7px;">
+								<select class="form-control" name="categoryIdOne" onchange="getCategoryIdTwo(this.value)">
+								<option value="">一级分类</option> 							</select> 
+							</div>
+							<div class="col-sm-3 has-feedback" style="padding-top: 7px;">
+								<select class="form-control" name="categoryIdTwo" id="categoryIdTwo">
+								<option value="">二级分类</option>
+							</select> 							
+							</div>
+						</div>	
+						#end
+						
+						#if($Radio == "true")
+						<div class="form-group">
+							<div class="col-sm-2 col-lg-1 col-sm-offset-2 col-lg-offset-3">
+								<label class="control-label" for="ctype">食堂属性</label>
+							</div>
+							#if($!baseInfoParam.nature)
+							<div class="col-sm-5 has-feedback" style="padding-top: 7px;">
+								<label style="font-weight:normal;">
+									<input onclick="cateenType(1)" name="nature" type="radio" value="1" #if($!baseInfoParam.nature==1)checked #end style="float: left;"/>法人
+								</label>	
+								<label style="font-weight:normal;margin-left: 15px;">
+									<input onclick="cateenType(2)" name="nature" type="radio" value="2"  #if($!baseInfoParam.nature==2)checked #end  style="float: left;"/>非法人
+								</label>	
+							</div>
+							#else
+							<div class="col-sm-5 has-feedback" style="padding-top: 7px;">
+								<label style="font-weight:normal;">
+									<input name="nature" type="radio" value="1" checked style="float: left;" id="faren" onclick="cateenType(1)"/>法人
+								</label>	
+								<label style="font-weight:normal;margin-left: 15px;">
+									<input name="nature" type="radio" value="2" style="float: left;" onclick="cateenType(2)"/>非法人
+								</label>	
+							</div>
+							#end
+						</div>	
+						#end
+						
+						#foreach($column in $auTable.columns) 
+							#if($column.columnNameOutLow!='id' && $column.columnNameOutLow.indexOf('Time')<=0)
+						    <div class="form-group">
+		                        <div class="col-sm-2 col-lg-1 col-sm-offset-2 col-lg-offset-3">
+		                            <label class="control-label"for="addClassfiy"><i style="color: red">*</i>$column.logicalName：</label>
+		                        </div>
+		                        <div class="col-sm-5 col-md-4 col-lg-3">
+		                            <input class="form-control" name="$column.columnNameOutLow" placeholder="请输入$column.logicalName..." id="$column.columnNameOutLow"/>
+		                        </div>
+		                    </div> 
+					        #end
+						#end 
+						
+						#if($canUploadImage == "true")
+						<!-- 图片上传 -->
+						<div class="form-group">
+							<div class="col-sm-2 col-lg-1 col-sm-offset-2 col-lg-offset-3">
+								<label class="control-label" for="cname">LOGO</label>
+							</div>
+							<div class="col-sm-4">
+								<input type="hidden" datatype="*" nullmsg="logo不能为空" sucmsg=" " id=logo class="img" name="logo" >
+			                 	<a class="btn btn-warning btn-upload role_logoUpload" name="upload" href="javascript:void(0);">上传图片</a>
+							</div>
+							<div class="col-sm-3 pt4">
+			                    <div class="Validform_checktip"></div>
+			                </div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-8 col-sm-offset-4">
+								<div class="img-box1 imgsbox1" name="logoimg" id="logoimg"></div>
+							</div>
+							<div class="col-sm-8 col-sm-offset-4">
+						       	<span class="help-block">（请上传8M以下的图片文件，支持jpg/png/gif格式，推荐200*200pix以上）</span>
+						   	</div>
+						</div>
+						#end
+						
+						#if($Map == "true")
+						<!-- 地理信息 -->
+						<div class="form-group">
+							<div class="col-sm-2 col-lg-1 col-sm-offset-2 col-lg-offset-3">
+								<label class="control-label" for="cgeo">地理信息</label>
+							</div>
+							<div class="col-sm-7" id="city">
+								<div class="has-feedback" style="display: inline-block;">
+									<select class="form-control prov"></select> 
+									<span class="glyphicon glyphicon-triangle-bottom form-control-feedback caret-self" aria-hidden="true"></span>
+								</div>
+								<div class="has-feedback" style="display: inline-block;">
+									<select class="form-control city"></select>
+									<span class="glyphicon glyphicon-triangle-bottom form-control-feedback caret-self" aria-hidden="true"></span>
+								</div>
+								<div class="has-feedback" style="display: inline-block;">
+								  	<select name="areaCode" class="form-control dist"></select>
+								 	<span class="glyphicon glyphicon-triangle-bottom form-control-feedback caret-self" aria-hidden="true"></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group geography">
+							<div class="col-sm-6 col-sm-offset-4">
+								<textarea name="address" id="address" class="address" placeholder="（请输入街道门牌号）" onkeyup="myFunction()" datatype="*" nullmsg="街道门牌号不能为空" sucmsg=" ">$!baseInfoParam.address</textarea>
+							</div>
+							<div class="col-sm-3">
+			                    <div class="Validform_checktip"></div>
+			                </div>
+						</div>
+						<div class="form-group">	
+							<div class="col-sm-8 col-sm-offset-4">
+								<div style="border: 4px solid rgb(221, 221, 221); border-image: none;">
+									<div id="allmap" style="width: 100%; height: 400px;"></div>
+									<input name="position" class="position" type="hidden" value="$!baseInfoParam.position" >
+								</div>
+							</div>
+							<div class="col-sm-8 col-sm-offset-4">
+						       	<span class="help-block">（请在地图上标明地理位置）</span>
+						   	</div>
+						</div>
+						#end
+						
+	                </form>
+                <div class="text-center mt30 pr">
+					<div class="shade-save"></div>
+					<a class="btn btn-warning save role_add_save" href="javascript:void(0);" onclick="addUserEnterprise()">保存</a>
+				</div>
+            </div>
+        </div>
+        
+        <script src="XXXXXX!rc.contextPath/static/js/cityselect/jquery.cityselect.js"></script>
+        <script src="XXXXXX!rc.contextPath/static/js/ValidForm/Validform_v5.3.2.js"></script>
+        <script type="text/javascript" src="/static/js/tpl/${MainTableAs}/mainAddOrEdit${table.tableNameOut}.js"></script>
+        <script src="XXXXXX!rc.contextPath/static/js/jQuery/jquery-1.11.1.min.js"></script>
+		
+		#if($canUploadImage == "true")
+		<!-- 图片上传 -->
+		<script src="XXXXXX!rc.contextPath/static/js/template.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/portrait.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/portrait2.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/sco.modal.js"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/fileinput.js" type="text/javascript"></script>
+		<script src="XXXXXX!rc.contextPath/static/js/jquery.Jcrop.min.js"></script>
+		
+        <script id="portraitUpload" type="text/html">
+   			<div class="modalselect">
+				<form enctype="multipart/form-data" action="$!rc.contextPath/file/upload_Resize_file" method="post">
+            		<div class="embed-responsive" style="width:558px;height:309px;">
+                		<div class="embed-responsive-item selectimg">
+							<img alt="" src="$!rc.contextPath/static/images/showimg.jpg" id="cut-img" class="img-responsive img-thumbnail" width="558" height="309"/>
+                		</div>
+            		</div>
+            		<div class="white-divider-md"></div>
+            		<div class="uploadtips clearfix">
+						<span class="tipspan"><i class="fa fa-info-circle role_fileUpload"></i>裁剪上传图片后请记得确认保存</span>
+						<input type="file" name="file" id="fileUpload" class="file" data-show-preview="false"/>
+					</div>
+            		<div class="white-divider-md"></div>
+            		<div id="alert" class="alert alert-danger hidden" role="alert"></div>
+            		<input type="hidden" id="x" name="x"/>
+            		<input type="hidden" id="y" name="y"/>
+            		<input type="hidden" id="w" name="w"/>
+            		<input type="hidden" id="h" name="h"/>
+        		</form>
+    		</div>
+		</script>
+		<script id="portraitrectangle" type="text/html">
+    		<div class="modalselect">
+				<form enctype="multipart/form-data" action="$!rc.contextPath/file/upload_Resize_file" method="post">
+           	 		<div class="embed-responsive" style="width:558px;height:309px;">
+                		<div class="embed-responsive-item selectimg">
+							<img alt="" src="$!rc.contextPath/static/images/showimg.jpg" id="cut-img" class="img-responsive img-thumbnail" width="558" height="309"/>
+                    	</div>
+            		</div>
+            		<div class="white-divider-md"></div>
+            		<div class="uploadtips clearfix">
+						<span class="tipspan"><i class="fa fa-info-circle"></i>裁剪上传图片后请记得确认保存</span>
+						<input type="file" name="file" id="filerectangle" class="file" data-show-preview="false"/>
+					</div>
+            		<div class="white-divider-md"></div>
+            		<div id="alert" class="alert alert-danger hidden" role="alert"></div>
+            		<input type="hidden" id="x" name="x"/>
+            		<input type="hidden" id="y" name="y"/>
+            		<input type="hidden" id="w" name="w"/>
+            		<input type="hidden" id="h" name="h"/>
+        		</form>
+    		</div>
+		</script>
+		#end
+		
+		<script type="text/javascript">
+			#if($canUploadImage == "true")
+			var i=0;
+			//图片上传
+			var imageViewShow = 'XXXXXX!imgViewAddress';
+		    var logo= 'XXXXXX!${table.tableNameOut}Param.logo';
+		  	//单文件上传
+			function FileUpload() {
+			    this.portrait = function (target, uploadUrl, data) {
+			        target.fileinput({
+			            language: 'zh', //设置语言
+			            uploadUrl: '/file/upload_Resize_file', //上传的地址
+			            dropZoneEnabled: false,//是否显示拖拽区域
+			            uploadExtraData: data,//上传时除了文件以外的其他额外数据
+			            allowedPreviewTypes: ['image'],
+				        allowedFileTypes: ['image'],
+				        allowedFileExtensions:  ['gif', 'jpg' ,'png'],
+				        showRemove: false,
+				        showCancel: false,
+			            showUpload: true, //是否显示上传按钮
+			            showCaption: false,//是否显示标题
+			            maxFileSize : 8192,
+			            maxFileCount: 1,
+			            browseClass: "btn btn-primary"
+			        }).on("fileuploaded", function(event, data) {
+			        	if(data && data.response && data.response.code == 0){
+				        	//添加图片
+				        	var val = data.response.rows  ;
+				        	var _html='<img class="delimg" src="../static/images/delimg.png"><img class="upimg" src="'+imageViewShow+data.response.rows+'" />';
+				        	var $imgdiv=$btn.parents(".form-group").next().find(".img-box1");
+				        	$imgdiv.append(_html);
+				        	if($imgdiv.html()==null || $imgdiv.html().length == 0){
+				        		$imgdiv.append(_html);
+				        	}else{
+				        		$imgdiv.find("img").remove();
+				        		$imgdiv.append(_html);
+				        	}
+
+				        	$btn.parents(".form-group").find(".img").val(val);
+				        	$btn.parents(".form-group").find(".img").blur();
+				        	
+			        	}else{
+			        		alert(data.response.desc);
+			        	}
+			        	var modal = XXXXXX.scojs_modal({
+			    		    keyboard: true
+			    		});
+			        	modal.close();
+			        	
+			       });
+			    }
+			}
+			
+			//展示
+			var logo = "XXXXXX!${table.tableNameOut}Param.logo";
+			if(logo!=null && logo!=''){
+				var _html='<div class="item foodimg"><img src="'+imageViewShow+logo+'" class="wh200"></div>';
+				var _img = $("[name=logo]").parents(".form-group").next().find(".img-box1");
+		    	if(_img.html()==null || _img.html().length == 0){
+		    		_img.append(_html);
+		    	}
+		    	$("[name=logo]").val(logo);
+			}
+			
+			
+			
+		    function isNotNull(str){
+		    	if(str && str != undefined && str != null && str != ''){
+		    		return true;
+		    	}
+		    }
+		   
+		    if(isNotNull(logo)){
+		    	//添加图片
+			    //赋值
+		    	var _html='<div class="item foodimg"><img src="'+imageViewShow+logo+'" class="upimg" id="logo1"></div>';
+		    	if($(".imgsbox1").html()==null || $(".imgsbox1").html().length == 0){
+		    		$(".imgsbox1").append(_html);
+		    	}else{
+		    		$(".imgsbox1").find(".foodimg").remove();
+		    		$(".imgsbox1").append(_html);
+		    	}
+			}
+
+			//删除图片
+			$("body").on("click",".delimg",function() {
+				var _html = "<p>确认删除该图片？</p>";
+				var _this = this;
+				layer.open({
+					title : "删除图片",
+					content : _html,
+					icon: 3,
+					btn : [ '确定', '取消' ],
+					yes : function(index, layero) {
+						//按钮【按钮一】的回调
+						layer.close(index);
+						//删除图片
+						$(_this).parents(".form-group").prev().find(".img").val('');
+						$(_this).parents(".form-group").prev().find(".img").blur();
+						$(_this).parent().find("img").remove();
+					},
+					btn2 : function(index, layero) {
+						//按钮【按钮二】的回调
+					},
+					cancel : function() {
+						/* 右上角关闭回调 */
+					}
+				})
+			});
+			#end
+
+			#if($Map == "true")
+			/* 地理联动 */
+			$(function(){
+				if('$!canteenId'==""){
+					$('#city').citySelect({
+				        url:"$!rc.contextPath/static/js/cityselect/city.min.js",
+				        prov:"", //省
+				        city:"", //市	
+				        dist:"", //区
+				        nodata:"none", //当子集无数据时，隐藏select
+				        required:false
+				    }); 
+				}else{
+					$('#city').citySelect({
+						url : "$!rc.contextPath/static/js/cityselect/city.min.js",
+						prov : "$!prov", //省份
+						city : "$!city", //城市
+						dist : "$!dist", //区县
+						nodata : "none" //当子集无数据时，隐藏select
+					});
+				}
+			});
+			#end
+			
+			#if($Radio == "true")
+			<!-- 单选框 -->
+			function cateenType(value){
+				if(value==2){
+					//$('#businessNo').removeAttr('datatype').removeAttr('nullmsg').removeAttr('sucmsg'); 
+					$('.unitCard').hide();
+					$('#businessNo').val("");
+					return;
+				}else{
+				    //$('#businessNo').attr('datatype','n12-15').attr('nullmsg','企业注册号不能为空').attr('sucmsg',' '); 
+					$('.unitCard').show();
+				}
+			}
+			#end
+		</script>
+		
+		#if($Map == "true")
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=VdGhOfYto316HMEuGEiyQgjDjk8tyPF8" ></script>
+		<script>
+			//地图初始化ip定位城市
+			var map = new BMap.Map("allmap");
+			var position = "$!baseInfoParam.position";
+			if (position != null && position != undefined && position != '') {
+				myFun2(position);
+			} else {
+				var myCity = new BMap.LocalCity();
+				myCity.get(myFun);
+			}
+			//地址改变清空地址输入框
+			$(".prov").change(function(){
+				$(".address").val("");
+				$(".position").val("");
+			});
+			$(".city").change(function(){
+				$(".address").val("");
+				$(".position").val("");
+			});
+			$(".dist").change(function(){
+				$(".address").val("");
+				$(".position").val("");
+			});
+			//录入使用
+			function myFun(result) {
+				var cityName = result.name;
+				var new_point = new BMap.Point(cityName.lng, cityName.lat);//读入的经纬度
+				map.centerAndZoom(new_point, 13);
+				map.enableScrollWheelZoom(true);
+				map.setCenter(cityName);
+				//地图空间
+				var top_left_control = new BMap.ScaleControl({
+					anchor : BMAP_ANCHOR_TOP_LEFT
+				});// 左上角，添加比例尺
+				var top_left_navigation = new BMap.NavigationControl(); //左上角，添加默认缩放平移控件
+	
+				map.addControl(top_left_control);
+				map.addControl(top_left_navigation);
+			}
+	
+			//编辑使用
+			function myFun2(result) {
+				var posiArry = result.split(",");
+				var new_point = new BMap.Point(posiArry[0], posiArry[1]);//读入的经纬度
+				var marker = new BMap.Marker(new_point); // 创建标注
+				var top_left_control = new BMap.ScaleControl({
+					anchor : BMAP_ANCHOR_TOP_LEFT
+				});// 左上角，添加比例尺
+				var top_left_navigation = new BMap.NavigationControl(); //左上角，添加默认缩放平移控件
+				map.centerAndZoom(new_point, 14);
+				map.enableScrollWheelZoom(true);
+				map.addOverlay(marker);
+				map.panTo(new_point);
+				map.addControl(top_left_control);
+				map.addControl(top_left_navigation);
+				
+				marker.enableDragging(); 
+				marker.addEventListener("dragend", function(e){
+					/* //移动标注显示地址
+					myGeo.getLocation(e.point, function(rs){
+						var addComp = rs.addressComponents;
+						document.getElementById("sult").innerHTML =addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
+					}); */ 
+					longitude = e.point.lng;
+					latitude = e.point.lat;
+					$(".position").val(longitude + "," + latitude);
+				});
+			}
+			$(function(){
+				var abc = $(".prov option:selected").text();
+				abc += $(".city option:selected").text();
+				abc += $(".dist option:selected").text();
+				abc += $(".address").val();
+				console.log(abc);
+				if(abc==""){
+					$(".address").attr("disabled",true);
+				}
+				$(".dist").change(function(){ 
+					 $(".address").attr("disabled",false);
+				})
+			})
+			function myFunction() {
+				var abc = $(".prov option:selected").text();
+				abc += $(".city option:selected").text();
+				abc += $(".dist option:selected").text();
+				abc += $(".address").val();
+				// 创建地址解析器实例
+				var myGeo = new BMap.Geocoder();
+				// 将地址解析结果显示在地图上,并调整地图视野
+				map.clearOverlays();
+				myGeo.getPoint(abc, function(point) {
+// 					if($("#address").val()=="" || $("#address").val()==null){
+// 						alert("您选择地址没有解析到结果!");
+// 					}
+					if (point) {
+						var marker = new BMap.Marker(point); 
+						map.centerAndZoom(point, 14);
+						map.enableScrollWheelZoom(true);
+						map.addOverlay(marker);
+						marker.enableDragging(); 
+						/* document.getElementById("result").innerHTML = point.lng + ", " + point.lat;//打印原坐标 */
+						//经纬度
+						longitude = point.lng;
+						latitude = point.lat;
+						$(".position").val(longitude + "," + latitude);
+						//移动标注后重新取经纬度
+						marker.addEventListener("dragend", function(e){
+							/* //移动标注显示地址
+							myGeo.getLocation(e.point, function(rs){
+								var addComp = rs.addressComponents;
+								document.getElementById("sult").innerHTML =addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber;
+							}); */ 
+							longitude = e.point.lng;
+							latitude = e.point.lat;
+							$(".position").val(longitude + "," + latitude);
+							
+						});
+					} else {
+						alert("您选择地址没有解析到结果!");
+					}
+				});
+			};
+		</script>
+		#end
+        <script type="text/javascript">
+                
+                /*添加*/
+                function addUserEnterprise(){debugger;
+               		var postData=XXXXXX("#from").serialize();
+               		
+					XXXXXX.ajax({
+						type:"POST",
+						data:postData,
+						dataType:"json",
+						url:"XXXXXX!rc.contextPath/${table.tableNameOut.toLowerCase()}/doSave",
+						success:function(){
+							layer.msg("添加成功");
+							parent.layer.closeAll();
+						}
+					})
+                	
+                }
+                
+
+        </script>
+</body>
+</html>
+
+
+
+
+ 

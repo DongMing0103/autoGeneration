@@ -1,0 +1,125 @@
+K 25
+svn:wc:ra_dav:version-url
+V 114
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action
+END
+AutoLayoutAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/AutoLayoutAction.java
+END
+RefreshLinkedTablesAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 145
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/RefreshLinkedTablesAction.java
+END
+DommainEditDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/DommainEditDialog.java
+END
+ValidateAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/ValidateAction.java
+END
+CopyAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/CopyAction.java
+END
+GenerateAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/GenerateAction.java
+END
+QuickOutlineAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/QuickOutlineAction.java
+END
+ToggleModelAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/ToggleModelAction.java
+END
+CopyAsImageAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/CopyAsImageAction.java
+END
+PasteAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/PasteAction.java
+END
+UppercaseAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/UppercaseAction.java
+END
+LowercaseAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/LowercaseAction.java
+END
+Physical2LogicalAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/Physical2LogicalAction.java
+END
+SelectedTablesDDLAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/SelectedTablesDDLAction.java
+END
+ImportFromJDBCAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/ImportFromJDBCAction.java
+END
+ChangeDBTypeAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/ChangeDBTypeAction.java
+END
+DeleteMarkerAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/DeleteMarkerAction.java
+END
+DommainEditAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/DommainEditAction.java
+END
+ImportFromDiagramAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 143
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/ImportFromDiagramAction.java
+END
+Logical2PhysicalAction.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/action/Logical2PhysicalAction.java
+END

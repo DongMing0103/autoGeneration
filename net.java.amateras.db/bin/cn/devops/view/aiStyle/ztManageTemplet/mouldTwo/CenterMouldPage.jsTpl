@@ -1,0 +1,178 @@
+/* mould${table.tableNameOut} */
+
+var table = jqueryHadTag"#GGGGGG${table.tableNameOut}Table");
+
+
+function queryParams(params){
+	return $("#searchForm").serialize()+"&order="+params.order+"&offset="+params.offset+"$limit="+params.limit;
+}
+
+function query(){
+	table.bootstrapTable('refresh',{url:'/${table.tableNameOut.toLowerCase()}/queryPage'},{query:$("#searchForm").serialize()});
+}
+
+//删除联系单、
+function delBox(ids){
+	layer.confirm("一定要删除此项目吗？",{icon:2,title:"信息"},function(index){
+		gg888.ajax({
+			cache:true,
+			url:"/${table.tableNameOut.toLowerCase()}/delMailBox?ids="+ids,
+			dataType:"json",
+			error:function(request){
+				layer.alert("系统超时或异常！",{time:2000});
+			},
+			success:function(data){
+				if(data&&data.statusCode==200){
+					layer.msg("操作成功！",{time:2000});
+					table.bootstrapTable('refresh');
+				}else{
+					layer.alert(data.message,{icon:2,title:'提示信息'});
+				}
+			}
+		});
+		layer.close(index);
+	});
+	
+}
+
+//时间转换
+function dateFormatter(value,row,index){
+	return formatDate(row.updateTime,'yyyy-MM-dd HH:mm:ss');
+}
+//状态转化
+function statusFormatter(value,row,index){
+	var formatter = '';
+	if(row.status=='0'){
+		formatter='未反馈';
+	}else if(row.status=='1'){
+		formatter = '已反馈';
+	}else if(row.status=='2'){
+		formatter='已关闭';
+	}
+	return formatter;
+}
+
+//价格转化
+function priceFormatter(value,row,index){
+	var formatter = '';
+	if(row.price == null){
+		formatter = '面议';
+	}else {
+		formatter = row.price;
+	}
+	return formatter;
+}
+
+//操作转换
+function operationFormatter(value,row,index){
+	var formatter = "<a class = 'operaBtn' href='javascript:return false;' onclick='viewMailbox("+row.id+")'>查看</a>"+
+					"<a class='operaBtn' href='javascript:return false;' onclick='delBox("+row.id+")'>删除</a>";
+	return formatter;
+}
+
+function viewMailbox(id){
+	window.location.href = '/${table.tableNameOut.toLowerCase()}/viewDetail/'+id+"/1";
+}
+
+//格式化bootstraptable
+function firstformatterTr(row,i){
+	var ftrNull = "<tr class='noborder'><td colspan='6'></td></tr>";
+	var ftr = "<tr  style='background-color:#f2f2f2;border-left:1px solid #ccc;border-right:1px solid #ccc;border-top:1px solid #ccc;' data-index='"+i+"'><td style='text-align:left;' class='span2' colspan='4'>联系单号:"+row.listNo+"</td><td style='border-right:1px solid #ccc;' class='span2' colspan='2'>Received"+
+	"Time:" +dataFormatter(row.updateTime,row,i)+"</td></tr>";
+	var str1= "<tr style='border-left:1px solid #ccc;'>"+
+	"<td class='span2 th-center leftborder' rowspan='2'><label style='text-align:center;'>"+row.title+"</label></td>"+
+	"<td class='span2 th-center leftborder'><label style='text-align:center;'>"+tranNullAndUndefind(row.cateName)+"</label></td>"+
+	"<td class='span2 th-center leftborder'><label style='text-align:center;'>"+tranNullAndUndefind(row.companyName)+"</label></td>"+
+	"<td class='span2 th-center leftborder' rowspan='2'><label style='text-align:center;'>"+row.price+"<label></td>"+
+	"<td class='span2 th-center leftborder' rowspan='2'><label style='text-align:center;'>"+statusFormatter(row.status,row,i)+"<label></td>"+
+	"<td class='span2 th-center leftborder' rowspan='2' sstyle='border-right:1px solid #ccc'><label style='text-align:center;'>"+operationFormatter(row.status,row,i)+"<label></td>"+
+	"</tr>";
+	var str2 = "<tr><td class='leftborder'><label style='text-align:center;'>"+tranNullAndUndefind(row.industryName)+"</label></td></tr>";
+	return ftr+str1+str2+ftrNull;
+}
+
+function tranNullAndUndefind(value){
+	if(value==null)return "--";
+	if(typeof(value)=="undefined"){
+		return "--";
+	}
+	return value;
+	
+}
+
+function closeMailbox(id){
+	layer.confirm("确定关闭吗",{icon:3,title:"信息"},function(index){
+		gg888.ajax({
+			cache:true,
+			url:"/${table.tableNameOut.toLowerCase()}/close?id="+id,
+			dataType:"json",
+			error:function(request){
+				layer.alert("系统超时或异常！",{time:2000});
+			},
+			success:function(data){
+				if(data&&data.statusCode == 200){
+					layer.msg("操作成功!",{time:2000});
+					table.bootstrapTable('refresh');
+				}else{
+					layer.alert(data.message,{icon:2,title:'提示信息'});
+				}
+			}
+		});
+		layer.close(index);
+	});
+}
+//反馈
+function feedMailbox(id){
+	window.location.href="/${table.tableNameOut.toLowerCase()}/feedMailbox/"+id;
+}
+//保存反馈
+function saveMailbox(){
+	var feedbackContent = $('[name="feedbackContent"]');
+	var content = feedbackContent.val();
+	if(content==''){
+		lay.alert("请输入联系人回复！",{title:"信息"});
+		return;
+	}
+	var id = $('input[name=id]').val();
+	gg888.ajax({
+		cache:true,
+		type:"post",
+		url:"/${table.tableNameOut.toLowerCase()}/feedback",
+		data:{"id":id,"feedbackContent":content},
+		dataType:"json",
+		error:function(request){
+			layer.alert("系统超时或异常！",{time:2000});
+		},
+		success:function(data){
+			if(data&&data.statusCode==200){
+				layer.msg("操作成功!",{time:2000});
+				window.location.href="/${table.tableNameOut.toLowerCase()}/init/2";
+			}else{
+				layer.alert(data.message,{icon:2,title:"提示信息"});
+			}
+		}
+	});
+}
+
+
+table.bootstrapTable({
+	onLoadSuccess:function(data){
+		$("#"+tableid+"thead tr").eq(1).css({"height":"20px","background-color":"#fff"});
+	}
+});
+
+//时间排序
+function queryTimeOrd (obj) {
+	var $this = $(obj);
+	var orderTime = $this.data("ordertime");
+	if (orderTime == "desc") {
+		$this.html("▲");
+		$this.data("ordertime","asc");
+		$("input[name = ordertime]").val("asc");
+	} else {
+		$this.html("▼");
+		$this.data("ordertime","desc");
+		$("input[name = ordertime]").val("desc");
+	}
+	query();
+}

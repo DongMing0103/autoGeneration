@@ -1,0 +1,34 @@
+10
+
+dir
+63
+http://192.168.0.135:8088/svn/kzs_dev_tools/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/view/output
+http://192.168.0.135:8088/svn/kzs_dev_tools
+
+
+
+2017-04-24T05:18:39.156000Z
+3
+wy
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e23ae9a8-bfe1-d44f-b85f-7245e569703b
+
+excel
+dir
+
+html
+dir
+

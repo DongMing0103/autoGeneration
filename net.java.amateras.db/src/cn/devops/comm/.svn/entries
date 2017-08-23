@@ -1,0 +1,31 @@
+10
+
+dir
+63
+http://192.168.0.135:8088/svn/kzs_dev_tools/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/cn/devops/comm
+http://192.168.0.135:8088/svn/kzs_dev_tools
+
+
+
+2017-07-03T09:54:02.782500Z
+25
+dongming
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+e23ae9a8-bfe1-d44f-b85f-7245e569703b
+
+constants
+dir
+

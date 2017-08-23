@@ -1,0 +1,9 @@
+plugin.name=AmaterasERD
+plugin.author=Project Amateras
+plugin.erd.editor=ER Diagram Editor
+plugin.erd.wizard=\u6570\u636E\u5173\u7CFBER Diagram
+plugin.erd.preference.validation=Validation
+plugin.erd.preference.dictionary=Dictionary
+
+extension-point.name = dialects
+extension-point.name.0 = generators

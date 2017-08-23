@@ -1,0 +1,135 @@
+<!-- main${table.tableNameOut} -->
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<!-- 头部样式需手动导入 -->
+	\#parse("./comm/static_new.html")
+	<title>${table.tableNameOut}</title>
+	<style>
+		.productManage-content .manageHead .name {
+			text-align: right;
+			margin-right: 6px;
+		}
+		#s2id_secondCategoryId {
+			margin-left: 5px;
+		}
+	</style>
+</head>
+<body>
+	<!-- 头部样式需手动导入 -->
+	\#parse("./comm/top_new.html")
+	<div class="main-box">
+		<!-- 左侧样式需手动导入 -->
+		\#parse("./comm/left_nav.html")
+		<div class="bread-div">我的服务 &gt;<span class="nav-active">${table.tableNameOut}</span></div>
+		
+		<form class="article-header" id="searchForm">
+			<div class="productManage-content">
+				<div class="manageHead clearfix">
+					#foreach($column in $qryTable.columns)
+						<div class="solution-item clearfix fn-left">
+							<span class="$column.columnNameOutLow name fn-left">$column.logicalName</span>
+							<div class="text fn-left">
+								<input type="text" name="$column.columnNameOutLow" class="input-txt" id=""/>
+							</div>
+						</div>
+					#end
+					
+					#if($canUpDown == "true")
+					<div class="solution-item clearfix fn-left">
+						<span class="name fn-left">状态</span>
+						<select name="status" id="status" class="form-control input-txt">
+							<option value="">全部</option>
+							<option value="1">暂存</option>
+							<option value="2">下架</option>
+							<option value="3">待上架</option>
+							<option value="4">上架</option>
+							<option value="5">停用</option>
+						</select>
+					</div>
+					#end
+					
+					#if($canCategory == "true")
+					<div class="solution-item claerfix fn-left">
+						<span class="name fn-left">分类</span>
+						<select name="firstCategoryId" id="firstCategoryId">
+							<option>全部</option>
+						</select>
+					</div>
+
+					<div class="solution-item claerfix fn-left">
+						<label for="" hidden="hidden"></label>
+						<select name="secondCategoryId" id="secondCategoryId">
+							<option value="">全部</option>
+						</select>
+					</div>
+					#end
+					
+					<input type="hidden" name="ordertime" value="desc">
+					<span class="btn btn-blue-b-filling search fn-left" onclick="query()">查询</span>
+				</div>
+			</div>
+		</form>
+		<div class="addDelete">
+			<span class="btn btn-blue-b-filling" onclick="toAddPage()">新增</span>
+			<span class="btn btn-blue-b-filling" onclick="toDelete()">删除</span>
+		</div>
+		
+		<!-- list -->
+		<div class="manageContent">
+			<table data-classes="article-table" data-toggle="table" data-url="/${table.tableNameOut.toLowerCase()}/queryPage"
+				data-pagination="true" data-query-params="queryParams" data-side-pagination="server" id="${table.tableNameOut}Table">
+				<thead>
+					<tr>
+						<th data-checkbox="true"></th>
+						#foreach($column in $table.columns)
+						<th class="span2" data-field="$column.columnNameOutLow">$column.logicalName</th>
+						#end
+						
+						#if($canUpDown == "true")
+						<th class="span2" data-field="status" data-formatter="statusFormatter">状态</th>
+						#end
+						
+						#if($canUploadImage == "true")
+						<th data-field="imageUrl" class="th-center" data-width="15%" data-formatter="imageFormatter">图片</th>
+						#end
+						
+						<th class="span2" data-field="updateTime" data-formatter="dataFormatter">修改时间<span onclick="queryTimeOrd(this)" data-ordertime="desc">▼</span></th>
+						<th class="span2" data-field="enabled" data-formatter="buttonFormatter">操作</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		<!-- 底部样式需手动导入 -->
+		\#parse("./comm/footer_new.html")
+<script type="text/javascript" src="gg888{static}/static/dep/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="gg888{static}/static/dep/upload.js"></script>
+<script type="text/javascript" src="gg888{static}/static/html/common/common.js"></script>
+<script type="text/javascript" src="gg888{static}/static/js/common/components.js"></script>
+<script type="text/javascript" src="gg888{static}/static/js/${MainTableAs}/${table.tableNameOut}.js"></script>
+
+</body>
+<script>
+	#if($canCategory == "true")
+	var flag = "$!flag";
+	$(function () {
+		var category = new Category({defalutName: "全部", status: ""});
+		category.execute();
+		
+		//一级 ——> 二级分类联动
+		var category = new Category({'level': 2, 'id': "secondCategoryId", defalutName: "全部", status: ""});
+		category.execute();
+		tablerefresh();
+		function tablerefresh() {
+			var date = new Date();
+			var t = "#" + date.getTime()
+			jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh', {url:"/${table.tableNameOut.toLowerCase()}/queryPage"}, {query: $("#searchForm").serialize()  +  "&t=" +t});
+			
+		}
+	})
+	#end
+</script>
+
+</html>

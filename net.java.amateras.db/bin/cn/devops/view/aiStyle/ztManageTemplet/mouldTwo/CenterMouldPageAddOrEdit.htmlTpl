@@ -1,0 +1,45 @@
+<!-- mouldAddOrEdit${table.tableNameOut} -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+\#parse("./common/header.html")
+<link href="/static/css/detail.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="${static}/static/js/${table.tableNameOut}.js"></script>
+<script src="${static}/static/dep/upload.js"></script>
+<script src="${static}/static/dep/uploadify/jquery.uploadify.min.js"></script>
+
+<title>${table.tableNameOut}</title>
+</head>
+<body>
+
+<div class="article-addpage" id="article-addpage">
+	<form id="${table.tableNameOut}InforForm" method="post">  
+	<input type="hidden" name="id" id="id" value="gg888!po.id"/>
+			
+	<div class="sch-wrap clearfix alert alert-success">
+		<div class="row">
+			#foreach($column in $auTable.columns) 
+			#if($column.columnNameOutLow!='id' && $column.columnNameOutLow.indexOf('Time')<=0)
+			<div class="col-lg-3">
+			                    <div class="input-group">
+			                    <span class="input-group-addon">$column.logicalName</span>
+			                    <input class="form-control" type="text" title="please input $column.logicalName！" value="gg888!${table.tableNameOut}PO.$column.columnNameOutLow" placeholder="please input$column.logicalName…" name="$column.columnNameOutLow" required>
+			                    </div>
+	        </div>
+	        #end
+			#end
+			<div class="row">
+        	<div class="col-lg-3">
+        		//<input type="button" class="btn btn-bgblue" value="保存" name="btnSave" id="btnSave">
+				<button type="button" class="btn btn-bgblue" onclick="saveOrUpdate('add')" id="btnSave">保存</button>
+				<button type="button" class="btn btn-bgblue" onclick="closeThis()" id="btnClose">关闭</button>
+	        </div>
+		</div>	        
+    </form>
+</div>
+</body>
+\#parse("./${table.tableNameOut}/mainAddOrEdit${table.tableNameOut}func.html") 
+
+</html>

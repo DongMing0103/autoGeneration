@@ -1,0 +1,131 @@
+<!-- mainAddOrEdit${table.tableNameOut} -->
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<!-- 手动添加头部、公共js -->
+\#parse("./comm/static_new.html")
+\#parse("./comm/kindeditor.html")
+<script src="${static}/static/dep/upload.js"></script>
+<script src="${static}/static/dep/uploadify/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="${static}/static/js/${MainTableAs}/mainAddOrEdit${table.tableNameOut}.js"></script>
+
+<title>${table.tableNameOut}</title>
+<style type="text/css">
+	.pd-pic-upload-tip {
+		display: block;
+		color: #b6b6b6;
+		margin-left: 90px;
+	}
+	#descripe {
+		min-height: 300px;
+	}
+</style>
+</head>
+<body>
+<!-- 手动添加头部 -->
+\#parse("./comm/top_new.html")
+<div class="main-box">
+	<!-- 手动添加左部样式  -->
+	\#parse("./comm/left_nav.html")
+	<form action="/${table.tableNameOut.toLowerCase()}/add${table.tableNameOut}" id="${table.tableNameOut}InforForm" method="post">  
+	<input type="hidden" id="id" value="gg888!${table.tableNameOut}.id"/>
+			
+	<div class="productDetails solution-wrap">
+		<div class="bread-div">
+			我的服务&gt; 产品管理&gt; <span class="nav-active">详情</span>
+		</div>
+		<div class="tab-switch fn-clear">
+			<ul class="switch-nav">
+				<li class="current" onclick="javascript:window.location.href=''">
+					<span>基本信息</span>
+				</li>
+			</ul>
+		</div>
+		<br>
+		
+		<ul class="input-from">
+			#foreach($column in $auTable.columns) 
+			#if($column.columnNameOutLow!='id' && $column.columnNameOutLow.indexOf('Time')<=0)
+			<li>
+			                    <span class="name">$column.logicalName</span>
+			                    <input class="input-txt long" type="text" value="gg888!${table.tableNameOut}.$column.columnNameOutLow" placeholder="请输入$column.logicalName…" name="$column.columnNameOutLow" id="$column.columnNameOutLow">
+	        </li>
+	        #end
+			#end
+			
+			#if($canUploadImage == "true")
+			<!-- 上传图片  -->
+			<li>
+				<span class="name"><i>*</i>图片</span>
+				<div class="pic J_pic">
+					<input value="" id="imageUrl" name="imageUrl" type="hidden">
+					<img src="gg888{static}/static/img/imgUpload_default.png" class="pic-view" id="companyLogo" style="text-align: left">
+					<div class="mask J_mask">
+						<span onclick="bigImg('companyLogo')">点击查看缩略图</span>
+						<em class="mask-close" onclick="closeImg()"></em>
+					</div>
+				</div>
+				<div class="pic-upload">
+					<input type="file" id="uploadify"/>
+					<i class="pic-upload-tip">上传图片格式文件为:JPG、PNG、GIF，图片大小限制80KB以内，建议分辨率为350X220</i>
+				</div>
+				
+			</li>
+			#end
+			
+			#if($canRichText == "true")
+			<!-- 详情 富文本编辑器  -->
+			<li>
+				<label class="name"><i class="red">*</i>详情</label>
+				<input type="hidden" id="content" name="content"/>
+				<textarea id="descripe" name="" class="product-textarea fn-left">gg888!${table.tableNameOut}.content</textarea>
+			</li>
+			#end
+
+        	<div class="btn-box">
+        		<!-- 新增  -->
+				<button type="button" class="btn btn-blue-b" onclick="saveOrUpdate('add',1,'保存')">保存</button>&emsp;
+				<button type="button" class="btn btn-blue-b-filling" onclick="saveOrUpdate('add',3,'提交')">提交</button>
+				
+				<!-- 编辑 -->
+				<button type="button" class="btn btn-blue-b" onclick="saveOrUpdate('update',1,'保存')">编辑保存</button>&emsp;
+				<button type="button" class="btn btn-blue-b-filling" onclick="saveOrUpdate('update',3,'提交')">编辑提交</button>
+	        </div>
+	</ul>
+		
+    </form>
+</div>
+<!-- 手动添加底部样式  -->
+\#parse("./comm/footer_new.html")
+</body>
+</html>
+<script>
+#if($canUploadImage == "true")
+	initEditor({el:"#descripe"});
+	var imageUrl ="gg888!${table.tableNameOut}.imgUrl";
+	var staticUrl = "gg888!{static}";
+	$(function(){
+		//图片上传
+		fileUpload({
+			swf : 'gg888{static}/static/dep/uploadify/uploadify.swf',
+			uploadId : "uploadify",
+			imgId : "uploadPicPath",
+			width : '20px',
+			height : '15px',
+			filePathId : "contractImageUrl",
+			webFilePath : "gg888!imgUploadAddress",
+			fileType : "*.gif; *.jpg; *.png",
+			contextPath : "gg888!sysDomainUrl",
+			'fileSizeLimit' : "80KB", //文件上传大小限制
+			webFilePath2 : "gg888!imgViewAddress",
+			callback : function(status, localFile, resp){
+				var respObj = eval('(' + resp + ')');
+				$("#imageUrl").val(respObj.filePaths);
+				$("#companyLogo").attr("src","gg888!imgViewAddress" + "/" +respObj.filePaths);
+			}
+		});
+	})
+#end
+</script>

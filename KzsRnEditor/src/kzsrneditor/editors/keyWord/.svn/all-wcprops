@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord
+END
+IAssistentContent.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord/IAssistentContent.java
+END
+KeyWordDetector.java
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord/KeyWordDetector.java
+END
+Contents.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord/Contents.java
+END
+KeyWordRule.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord/KeyWordRule.java
+END
+RnContentAssistent.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord/RnContentAssistent.java
+END
+KeywordAssistentData.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord/KeywordAssistentData.java
+END
+RnEditorInput.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/kzs_dev_tools/!svn/ver/62/trunk/kzsGenCode4eclipse/KzsRnEditor/src/kzsrneditor/editors/keyWord/RnEditorInput.java
+END

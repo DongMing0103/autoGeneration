@@ -1,0 +1,262 @@
+package ${package}.web.controller.${modelName};
+
+
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ${package}.common.enums.*;
+import ${package}.common.util.CollectionsUtil;
+import com.alibaba.dubbo.common.utils.CollectionUtils;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.ModelAndView;
+
+import ${package}.common.util.StringUtil;
+import ${package}.common.util.BeanConvertor;
+import ${package}.common.util.Consts;
+import ${package}.common.model.PageRespModel;
+import ${package}.common.model.RespModel;
+
+import ${package}.dao.entity.demo.*;
+import ${package}.dao.entity.${modelName}.${table.tableNameOut}PO;
+ 
+import ${package}.service.serviceimpl.util.FrontUserUtils;
+import ${package}.service.vo.${modelName}.${table.tableNameOut}VO;
+
+ 
+ 
+import ${package}.service.serviceInter.${modelName}.I${table.tableNameOut}Service;
+
+import ${package}.service.param.${modelName}.${table.tableNameOut}Param;
+
+import ${frameWorkPath}.controller.base.BaseController;
+import ${frameWorkPath}.plugin.Page;
+import ${frameWorkPath}.util.ParamMap;
+import ${frameWorkPath}.common.i18n.TranslatorHelper;
+
+
+/**
+ * ${table.tableNameOutLow} $!{logicalName}
+ * @author 
+ *
+ */
+@Controller
+@RequestMapping("/${table.tableNameOut.toLowerCase()}")
+public class Zt${table.tableNameOut}Controller  extends BaseController {
+    protected static final Logger logger = LoggerFactory.getLogger(Zt${table.tableNameOut}Controller.class);
+    @Autowired
+    I${table.tableNameOut}Service mainService;
+    
+   
+    
+    /**
+    ** 预留实现
+    */
+    public void initControler(HttpServletRequest request, Map<String, Object> map) {
+     
+    }
+    
+    @RequestMapping(value = "doSave")
+    @ResponseBody
+    public RespModel doSave(${table.tableNameOut}Param param, HttpServletRequest request) {
+        RespModel res = new RespModel();
+        ${table.tableNameOut}PO po=BeanConvertor.convertBean(param, ${table.tableNameOut}PO.class);
+            if (po == null || po.getId() == null) {
+                mainService.save(po);
+            } else {
+                mainService.update(po);
+            }
+        return res;
+    }
+    
+    /**
+    *
+    * 初始化
+    * @param param
+    * @return
+    */
+    @RequestMapping("/init")
+    @ResponseBody
+    public ModelAndView init() {
+    	ModelAndView view = new ModelAndView("/${table.tableNameOut.toLowerCase()}/main${table.tableNameOut}");
+    	//菜单
+    	view.addObject("active","${table.tableNameOut}");
+    	//获取分类
+		ParamMap param = new ParamMap();
+		param.put("cateLevel",Consts.CATE_LEVE_FIRST);
+		
+		return view;
+    }
+    
+    
+    /**
+    * 新增信息
+    * @param param
+    * @param request
+    * @param userId
+    * @return
+    */
+    @RequestMapping(value = "add${table.tableNameOut}", method = RequestMethod.POST)
+    @ResponseBody
+    public RespModel add${table.tableNameOut}(${table.tableNameOut}Param param,HttpServletRequest request) throws Exception {
+         RespModel res = new RespModel();
+         	//获取用户信息
+         	//param.setCreateId(FrontUserUtils.getLoginId());
+         	
+         	mainService.add(param);
+         	res.setCode(RespModel.RespCode.SUCCESS.getCode());
+         	res.setDesc(TranslatorHelper.getText("操作成功"));
+         return res;
+    }
+    
+    /**
+     * 新增页面跳转
+     */
+    @RequestMapping("/toAddPage")
+    public ModelAndView toAddPage() {
+    	ModelAndView view = new ModelAndView("/${table.tableNameOut.toLowerCase()}/mainAddOrEdit${table.tableNameOut}");
+    	return view;
+    }
+    
+    /**
+    * 编辑
+    */
+    @RequestMapping(value = "edit${table.tableNameOut}")
+    @ResponseBody
+    public ModelAndView edit${table.tableNameOut}(${table.tableNameOut}Param param,HttpServletRequest request) throws Exception {
+         ModelAndView modelAndView = new ModelAndView();
+         ${table.tableNameOut}PO po = mainService.get(${table.tableNameOut}PO.class, (long) param.getId());
+         modelAndView.addObject("po", po);
+         modelAndView.addObject("isedit", true);
+         modelAndView.setViewName("/${table.tableNameOut}/mainAddOrEdit${table.tableNameOut}");
+         return modelAndView;
+    }
+   
+    /**
+    * 删除
+    * @param ids
+    * @return 
+    */
+    @RequestMapping(value = "doDelete/{ids}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public RespModel delete(@PathVariable String ids) {
+        RespModel model = new RespModel();
+        	if (StringUtil.isEmpty(ids)) {
+        		model.setCode(RespModel.RespCode.SYS_EXCEPTION.getCode());
+        		model.setDesc(TranslatorHelper.getText("删除失败"));
+        		return model;
+        	}
+            mainService.deleteByIds(ids);
+        return model;
+    }
+    
+    /**
+    * 一览查询
+    * @param param
+    * @return
+    */
+    @RequestMapping("/queryPage")
+    @ResponseBody
+    public PageRespModel queryPage(${table.tableNameOut}Param param) throws Exception {
+    	PageRespModel model = new PageRespModel();
+    	
+		//查询创建人
+		/*if (FrontUserUtils.getLoginId() != null) {
+			param.setCreateId(FrontUserUtils.getLoginId());
+		} else {
+			param.setCreateId(0L);
+		}*/
+    	
+    	Page<${table.tableNameOut}VO> page = mainService.queryPage(param);
+    	model.setTotal(page.getTotalResult());
+    	model.setRows(page.result);
+    	return model;
+    }
+    
+    /**
+    * 根据id获取信息
+    * @param id
+    * @param type 1:修改页面  0:查看页面
+    * @return
+    */
+    @RequestMapping(value = "/get/{id}/{type}", method = RequestMethod.GET)
+    @ResponseBody
+    public ModelAndView get(@PathVariable Long id, @PathVariable Integer type) {
+    	${table.tableNameOut}PO po = mainService.getById(id);
+     
+    	
+    	//获取标签
+    	ModelAndView modelAndView = new ModelAndView();
+    	ParamMap param = new ParamMap();
+    	param.put("cateLevel", Consts.CATE_LEVE_FIRST);
+    	if (type == 0) { //判断类型，选择编辑或查看
+    		modelAndView.setViewName("${table.tableNameOut.toLowerCase()}/mainAddOrEdit${table.tableNameOut}");
+    	} else {
+    		modelAndView.setViewName("${table.tableNameOut.toLowerCase()}/mainAddOrEdit${table.tableNameOut}");
+    	}
+    	
+    	//获取信息
+    	modelAndView.addObject("${table.tableNameOut}PO",po);//信息
+    	
+    	modelAndView.addObject("flag",FrontUserUtils.isOperateAuth());//根据公司店铺审核资质进行判断是否进行上下架操作
+    	//modelAndView.addObject("${table.tableNameOut}TypeEnum",${table.tableNameOut}typeEnum.getStarLevelEnumList());
+    	return modelAndView;
+    }
+    
+    #if($canUpDown == "true")
+    /**
+	 * 上下架
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "updateStatus/{id}/{status}", method = RequestMethod.POST)
+	@ResponseBody
+	public RespModel updateStatus(@PathVariable Long id, @PathVariable Short status,${table.tableNameOut}PO ${table.tableNameOut.toLowerCase()}po) {
+		
+		RespModel res = new RespModel();
+		if (${table.tableNameOut}tPO.getStatus() != null && ${table.tableNameOut}PO.getId() != null) {
+
+			mainService.update(${table.tableNameOut}PO);
+			res.setCode(RespModel.RespCode.SUCCESS.getCode());
+			res.setDesc(RespModel.RespCode.SUCCESS.getDesc());
+		}
+			mainService.updateStatus(id, status);//更新状态
+		return res;
+	}
+    #end
+    
+    #if($canStopStart == "true" || $canUpDown == "true")
+    /**
+    *
+    * 修改状态信息
+    * @param param
+    * @param request
+    * @return
+    */
+    @RequestMapping(value = "doUpdate", method = RequestMethod.POST)
+    @ResponseBody
+    public RespModel doUpdate(${table.tableNameOut}Param param, HttpServletRequest request) {
+    	RespModel res = new RespModel();
+    		//根据id进行判断
+    		if (param.getId() == null || param.getId() <= 0) {
+    			res.setCode(RespModel.RespCode.PARAM_EXCEPTION.getCode());
+    			logger.error(TranslatorHelper.getText("缺失参数id"));
+    			res.setDesc(TranslatorHelper.getText("操作失败"));
+    		}
+    	return res;
+    }  
+    #end
+}

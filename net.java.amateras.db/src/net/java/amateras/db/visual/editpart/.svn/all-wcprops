@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart
+END
+DBEditPartFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/DBEditPartFactory.java
+END
+NoteEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/NoteEditPart.java
+END
+TableEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/TableEditPart.java
+END
+ForeignKeyEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/ForeignKeyEditPart.java
+END
+ManhattanConnectionRouter.java
+K 25
+svn:wc:ra_dav:version-url
+V 147
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/ManhattanConnectionRouter.java
+END
+IDoubleClickSupport.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/IDoubleClickSupport.java
+END
+AbstractDBEntityEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/AbstractDBEntityEditPart.java
+END
+TableEditDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/TableEditDialog.java
+END
+RootEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/RootEditPart.java
+END
+AbstractDBEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/AbstractDBEditPart.java
+END
+ForeignKeyEditDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/ForeignKeyEditDialog.java
+END
+MultiLineCellEditor.java
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/MultiLineCellEditor.java
+END
+AbstractDBConnectionEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/AbstractDBConnectionEditPart.java
+END
+ColumnFigure.java
+K 25
+svn:wc:ra_dav:version-url
+V 134
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/ColumnFigure.java
+END
+ColumnSelectDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 140
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/ColumnSelectDialog.java
+END
+NoteFigure.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/NoteFigure.java
+END
+CompartmentFigure.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/CompartmentFigure.java
+END
+AnchorEditPart.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/AnchorEditPart.java
+END
+TableFigure.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/visual/editpart/TableFigure.java
+END

@@ -1,0 +1,264 @@
+/* ${table.tableNameOut} */
+
+
+//公共的js代码
+var table = jqueryHadTag"#GGGGGG${table.tableNameOut}Table");
+
+//新增
+function toAddPage() {
+	window.location.href = "/${table.tableNameOut.toLowerCase()}/toAddPage";
+}
+
+//一览查询
+function queryParams (params) {
+	var date = new Date();
+	var t = date.getTime();
+	return $("#searchForm").serialize() + "&order=" + params.order + "&offset=" + params.offset +  "&limit=" + params.limit
+		+ "&tCondtion=" + t;
+}
+
+function query(){
+	var date = new Date();
+	var t = date.getTime();
+	jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh',{url: '/${table.tableNameOut.toLowerCase()}/queryPage'},{query:$("#searchForm").serialize() + "&tCondtion="+t});
+}
+
+$(".search-button").on('click', function () {
+    table.bootstrapTable('refresh',{url: '/${table.tableNameOut.toLowerCase()}/queryPage?1=1'});
+});
+
+function refresh_table(){
+	table.bootstrapTable('refresh');
+}
+
+
+/**
+ * 毫秒数转换成日前
+ * 年月日
+ */
+function toDate2(value){
+	if(value == "" || value == undefined){
+		return "";
+	}
+	var time = new Date(value);
+	return formatDate4(time);
+	
+}
+function formatDate4(d) {
+	var month = ((d.getMonth()+1)<=9?'0'+(d.getMonth()+1) : (d.getMonth()+1));
+	var date = (d.getDate()<=9?'0'+d.getDate() : d.getDate());
+	return d.getFullYear() + "-" + month + "-" + date;
+} 
+
+/**
+ * 格式化时间
+ */
+function dataFormatter (value,row,index) {
+	value = formatDate(row.updateTime,"yyyy-MM-dd HH:mm:ss");
+	return value;
+}
+
+/**
+ * 图片格式化
+ */
+#if($canUploadImage == "true")
+function imageFormatter(value) {
+	if (value == null || value == '' || value == undefined) {
+		return "<label style = 'text-align:center;'>-</label>"
+	}
+	var html = "<img src = '"+ imgViewAddress + "/" + value + "'/>";
+	return "<label style = 'text-align:center;'>"+ html +"</label>";
+}
+#end
+
+#if($canUpDown == "true")
+/**
+*  操作选项
+*/ 
+function buttonFormatter(value,row,index){
+	var str = "";
+	var enabled = row.enabled;
+	var isRec = row.isRec;
+	var strDetail = "<button type='button' class='btn btn-blue' onclick='showDetail("+ row.id +")'>查看</button>"
+	var strEdit = "<button type='button' class='btn btn-blue' onclick='showEdit("+ row.id +")'>编辑</button>"
+	
+	#if($canStopStart == "true")
+	if (enabled == 1) { // 停用
+		return strEdit;
+	} else {
+	#end
+		if (value == 1) { //暂存
+			return strEdit;
+		}
+		
+		if (value == 2) { //下架
+			if (flag == "true") {
+				str = "<button type='button' class='btn btn-bule' data-categoryname='"+ row.categoryName +"' onclick='changeStatus(this,4,"+ row.id +")'>上架</button>"
+					+ strEdit;
+			} else {
+				str = strEdit;
+			}
+		}
+		
+		if (value == 3) { //待上架
+			if (flag == "true") {
+				str = "<button type='button' class='btn btn-blue' data-categoryname='"+ row.categoryName +"' onclick='changeStatus(this,4,"+ row.id +")'>待上架</button>"
+					+ strEdit;
+			} else {
+				str = strEdit;
+			}
+		}
+		
+		if (value == 4) { //上架
+			if (isRec === 0) {
+				str = "<button type='button' class='btn btn-blue' data-categoryname='"+ row.categoryName +"' onclick='changeStatus(this,2,"+ row.id +")'>下架</button>"
+					+ strDetail;
+			} else {
+				str = strDetail;
+			}
+		} 
+	return str;
+	}
+
+
+#end
+
+#if($canUpDown == "true")
+/**
+ * 状态变更
+ */
+function changeStatus(elm, status, id) {
+	var title = "提示";
+	var message = "";
+	if (status == 2) {
+		title = "";
+		message = "您确定要上架吗？";
+	}
+	if (status == 3) {
+		title = "";
+		message = "您确定要下架吗?";
+	}
+	if (status == 8) {
+		title = "";
+		message = "您确定要上架吗？";
+	}
+	layer.confirm(message, {icon: 3, title: title}, function () {
+		layer.closeAll();
+		gg888.ajax({
+			type: "POST",
+			url: "/${table.tableNameOut.toLowerCase()}/updateStatus/" + id + "/" + status,
+			dataType: "json",
+			error: function (data) {
+				alert("超时或系统异常");
+			},
+			success: function (data) {
+				if (data && data.code == 0) {
+					$("#productTable").bootstrapTable({url:"/${table.tableNameOut.toLowerCase()}/queryPage"});
+					$("#productTable").bootstrapTable('refresh');;
+				} else {
+					layer.alert(data.desc, {icon: 5});
+				}
+			}
+		});
+	});
+	
+}
+#end
+
+//删除
+function toDelete(){
+	var idsElm = table.bootstrapTable('getSelections');
+	if (idsElm.length == 0) {
+		layer.alert("请选择要操作的产品！");
+		return;
+	}
+	var ids = "";
+	// 是否为上架状态
+	gg888.each (idsElm,function (i) {
+		var status = idsElm[i].status;
+		ids = ids + idsElm[i].id + ",";
+	})
+	layer.confirm('确定要删除产品吗?',{title:'提示信息'},function (){
+		var url = "/${table.tableNameOut.toLowerCase()}/doDelete/" + ids;
+		gg888.ajax({
+			url: url,
+			type: "DELETE",
+			dataType:"json",
+			success: function(data){
+				if (data && data == 0) {
+					jqueryHadTag"#GGGGGG${table.tableNameOut}Table").bootstrapTable('refresh');
+				} else {
+					layer.alert(data.desc, {icon: 5});
+				}
+			},
+			error: function () {
+				alert("超时或系统异常");
+			}
+		})
+	});
+}
+
+/**
+* 进入修改页面
+* @param id
+*/
+function showEdit (id) {
+	window.location.href = "/${table.tableNameOut.toLowerCase()}/get/" + id + "/0";
+}
+function showDetail (id) {
+	window.location.href = "/${table.tableNameOut.toLowerCase()}/get/" + id + "/1";
+}
+
+
+#if($canUpDown == "true" || $canStopStart == "true")
+/**
+状态显示，操作选项
+**/
+function statusFormatter(value,row,index){
+ 	var enabled = row.enabled;
+ 	if(value == "" || value == undefined){
+ 		return "<label style = 'text-align: center;'>-</label>";
+ 	}
+	if(enable == 1){
+		return "<label style = 'text-align: center;'>停用</label>";
+	}else{
+		if(value == 1){
+			return "<label style = 'text-align: center;'>暂存<label>";
+		}
+		if(value == 2){
+			return "<label style = 'text-align: center;'>下架</label>";
+		}
+		if(value == 3){
+			return "<label style = 'text-align: center;'>待上架</label>";
+		}
+		if(value == 4){
+			return "<label style = 'text-align: center;'>上架</label>";
+		}
+	}
+	
+}
+#end
+
+//时间排序
+function queryTimeOrd (obj) {
+	var $this = $(obj);
+	var orderTime = $this.data("ordertime");
+	if (orderTime == "desc") {
+		$this.html("▲");
+		$this.data("ordertime","asc");
+		$("input[name = ordertime]").val("asc");
+	} else {
+		$this.html("▼");
+		$this.data("ordertime","desc");
+		$("input[name = ordertime]").val("desc");
+	}
+	query();
+}
+
+function formatter(value){
+	if(value==null || value ==''|| value==undefined){
+		return "<label style='text-align:center;'>-</label>";
+	}
+	return "<label style='text-align:center;'>"+value+"</label>";
+}
+		

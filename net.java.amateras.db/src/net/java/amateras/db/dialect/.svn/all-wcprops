@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect
+END
+ColumnType.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/ColumnType.java
+END
+SybaseDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/SybaseDialect.java
+END
+IndexType.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/IndexType.java
+END
+SybaseSchemaLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/SybaseSchemaLoader.java
+END
+OracleDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/OracleDialect.java
+END
+AbstractDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 130
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/AbstractDialect.java
+END
+MySQLDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/MySQLDialect.java
+END
+IIndexType.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/IIndexType.java
+END
+HsqldbDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/HsqldbDialect.java
+END
+DerbyDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/DerbyDialect.java
+END
+MSSQLDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/MSSQLDialect.java
+END
+IDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 122
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/IDialect.java
+END
+ISchemaLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/ISchemaLoader.java
+END
+H2Dialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 123
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/H2Dialect.java
+END
+TableDependencyCalculator.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/TableDependencyCalculator.java
+END
+IColumnType.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/IColumnType.java
+END
+DialectProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/DialectProvider.java
+END
+DefaultSchemaLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/DefaultSchemaLoader.java
+END
+OracleSchemaLoader.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/svn/kzs_dev_tools/!svn/ver/13/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/OracleSchemaLoader.java
+END
+DB2Dialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/DB2Dialect.java
+END
+PostgreSQLDialect.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/svn/kzs_dev_tools/!svn/ver/3/trunk/kzsGenCode4eclipse/net.java.amateras.db/src/net/java/amateras/db/dialect/PostgreSQLDialect.java
+END
