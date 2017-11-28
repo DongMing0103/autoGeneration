@@ -118,7 +118,7 @@
 				#end
 				<th data-align="center" data-field="createTime" data-formatter="dateFormatter">创建时间
 				<span onclick="queryTimeOrd(this)" data-ordertime="desc">▼</span></th>
-				<th data-align="center" data-field="enabled" data-formatter="operateFormatter">操作</th> 
+				<th class="span2 selecttd" data-align="center" data-field="enabled" data-formatter="operateFormatter">操作</th> 
 			 
 			</tr>
 		</thead>

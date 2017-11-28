@@ -7,7 +7,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
- 
+
 public class XStreamSerializer {
 	
 	public static String serialize(Object obj, ClassLoader loader){

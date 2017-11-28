@@ -49,7 +49,7 @@ import ${frameWorkPath}.common.i18n.TranslatorHelper;
 
 /**
  * ${table.tableNameOutLow} $!{logicalName}
- * @author  
+ * @author 
  *
  */
 @Controller

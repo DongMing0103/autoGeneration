@@ -75,8 +75,8 @@
         FROM <include refid="querySqlMain"/>
         <where>
         	<if test="@Ognl@isNotEmpty(delFlag)">and del_flag = #{ delFlag }</if>
-        </where>
         <include refid="queryOptions"/>
+        </where>
         <include refid="orderControl"/>
     </select>
 
